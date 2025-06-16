@@ -315,8 +315,21 @@ class BookingForm {
         const container = document.getElementById('available-tents');
         
         console.log('Checking availability with dates:', { checkIn, checkOut });
-        console.log('BookingSystem instance:', window.bookingSystem);
         
+        // Check if bookingSystem is initialized
+        if (!window.bookingSystem) {
+            console.error('BookingSystem not initialized');
+            container.innerHTML = '<div class="text-center py-4"><p class="text-red-600">Error: Booking system not initialized. Please refresh the page.</p></div>';
+            return;
+        }
+        
+        // Check if tents exist
+        if (!window.bookingSystem.tents) {
+            console.error('No tents found in booking system');
+            container.innerHTML = '<div class="text-center py-4"><p class="text-red-600">Error: No tents found. Please refresh the page.</p></div>';
+            return;
+        }
+
         // If no dates selected, show all tents with a message
         if (!checkIn || !checkOut) {
             console.log('No dates selected, showing all tents');
@@ -355,20 +368,6 @@ class BookingForm {
             console.log('Calling getAvailableTents with dates:', { checkIn, checkOut });
             const availableTents = await window.bookingSystem.getAvailableTents(checkIn, checkOut);
             console.log('Available tents response:', availableTents);
-            
-            // Check if bookingSystem is working
-            if (!window.bookingSystem) {
-                console.error('BookingSystem not initialized');
-                container.innerHTML = '<div class="text-center py-4"><p class="text-red-600">Error: Booking system not initialized. Please refresh the page.</p></div>';
-                return;
-            }
-            
-            // Check if tents exist
-            if (!window.bookingSystem.tents) {
-                console.error('No tents found in booking system');
-                container.innerHTML = '<div class="text-center py-4"><p class="text-red-600">Error: No tents found. Please refresh the page.</p></div>';
-                return;
-            }
             
             if (!availableTents || Object.keys(availableTents).length === 0) {
                 console.log('No tents available for selected dates');
@@ -625,6 +624,10 @@ class BookingForm {
         document.getElementById('booking-checkout').textContent = new Date(booking.checkOut).toLocaleDateString('en-IN');
         
         document.getElementById('booking-success-modal').classList.remove('hidden');
+
+        // Dispatch event to notify that booking is completed
+        const event = new CustomEvent('bookingCompleted', { detail: booking });
+        document.dispatchEvent(event);
     }
 
     resetForm() {
@@ -656,6 +659,17 @@ class BookingForm {
         
         // Reset step display
         this.updateStepDisplay();
+    }
+
+    async submitBooking() {
+        if (!this.validateForm()) {
+            return;
+        }
+
+        // Bypass payment step
+        alert('Payment step is bypassed');
+        const bookingData = this.getBookingData();
+        await this.processBooking(bookingData);
     }
 }
 
