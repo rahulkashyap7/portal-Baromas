@@ -192,67 +192,78 @@
         }
 
         // Update tent availability status in the UI
-        function updateTentAvailabilityStatus() {
-          if (!window.bookingSystem) return;
+        async function updateTentAvailabilityStatus() {
+          if (!window.bookingSystem) {
+            console.log('Booking system not initialized yet');
+            return;
+          }
           
+          console.log('Updating tent availability status...');
           const today = new Date().toISOString().split('T')[0];
           const tomorrow = new Date();
           tomorrow.setDate(tomorrow.getDate() + 1);
           const tomorrowStr = tomorrow.toISOString().split('T')[0];
           
-          // Check availability for today and tomorrow as sample
-          const availableTents = window.bookingSystem.getAvailableTents(today, tomorrowStr);
-          
-          // Update tent cards status
-          document.querySelectorAll('.tent-card').forEach(card => {
-            const tentName = card.querySelector('h4').textContent;
-            const statusSpan = card.querySelector('span[class*="bg-"]');
+          try {
+            // Check availability for today and tomorrow as sample
+            console.log('Checking availability for dates:', { today, tomorrowStr });
+            const availableTents = await window.bookingSystem.getAvailableTents(today, tomorrowStr);
+            console.log('Available tents:', availableTents);
             
-            // Map tent names to IDs
-            const tentIdMap = {
-              'Triveni Tent 1': 'triveni-1',
-              'Triveni Tent 2': 'triveni-2',
-              'Triveni Tent 3': 'triveni-3',
-              'Panchvati Tent 1': 'panchvati-1',
-              'Panchvati Tent 2': 'panchvati-2',
-              'Panchvati Tent 3': 'panchvati-3',
-              'Panchvati Tent 4': 'panchvati-4',
-              'Panchvati Tent 5': 'panchvati-5'
-            };
-            
-            const tentId = tentIdMap[tentName];
-            if (tentId && statusSpan) {
-              if (availableTents[tentId]) {
-                statusSpan.className = 'bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full';
-                statusSpan.textContent = 'Available';
-                
-                // Enable view details button
-                const button = card.querySelector('button');
-                if (button) {
-                  button.disabled = false;
-                  button.className = 'view-tent-details bg-primary hover:bg-blue-600 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors';
-                }
-              } else {
-                statusSpan.className = 'bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full';
-                statusSpan.textContent = 'Booked';
-                
-                // Disable view details button
-                const button = card.querySelector('button');
-                if (button) {
-                  button.disabled = true;
-                  button.className = 'view-tent-details bg-gray-300 cursor-not-allowed text-gray-600 px-3 py-1.5 rounded-button whitespace-nowrap text-sm';
+            // Update tent cards status
+            document.querySelectorAll('.tent-card').forEach(card => {
+              const tentName = card.querySelector('h4').textContent;
+              const statusSpan = card.querySelector('span[class*="bg-"]');
+              
+              // Map tent names to IDs
+              const tentIdMap = {
+                'Triveni Tent 1': 'triveni-1',
+                'Triveni Tent 2': 'triveni-2',
+                'Triveni Tent 3': 'triveni-3',
+                'Panchvati Tent 1': 'panchvati-1',
+                'Panchvati Tent 2': 'panchvati-2',
+                'Panchvati Tent 3': 'panchvati-3',
+                'Panchvati Tent 4': 'panchvati-4',
+                'Panchvati Tent 5': 'panchvati-5'
+              };
+              
+              const tentId = tentIdMap[tentName];
+              if (tentId && statusSpan) {
+                console.log(`Checking tent ${tentName} (${tentId}):`, availableTents[tentId] ? 'Available' : 'Booked');
+                if (availableTents[tentId]) {
+                  statusSpan.className = 'bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full';
+                  statusSpan.textContent = 'Available';
+                  
+                  // Enable view details button
+                  const button = card.querySelector('button');
+                  if (button) {
+                    button.disabled = false;
+                    button.className = 'view-tent-details bg-primary hover:bg-blue-600 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors';
+                  }
+                } else {
+                  statusSpan.className = 'bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full';
+                  statusSpan.textContent = 'Booked';
+                  
+                  // Disable view details button
+                  const button = card.querySelector('button');
+                  if (button) {
+                    button.disabled = true;
+                    button.className = 'view-tent-details bg-gray-300 cursor-not-allowed text-gray-600 px-3 py-1.5 rounded-button whitespace-nowrap text-sm';
+                  }
                 }
               }
-            }
-          });
+            });
+          } catch (error) {
+            console.error('Error updating tent availability:', error);
+          }
         }
 
         // Initialize calendar
         generateCalendar(currentMonth, currentYear);
         
         // Update tent availability status when booking system is ready
-        setTimeout(() => {
-          updateTentAvailabilityStatus();
+        setTimeout(async () => {
+          await updateTentAvailabilityStatus();
         }, 100);
 
         // Previous month button

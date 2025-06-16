@@ -91,15 +91,39 @@ class BookingSystemAPI {
 
     // Get available tents for given dates
     async getAvailableTents(checkIn, checkOut) {
+        console.log('getAvailableTents called with:', { checkIn, checkOut });
         const available = {};
         
-        for (const [tentId, tent] of Object.entries(this.tents)) {
-            const isAvailable = await this.isAvailable(tentId, checkIn, checkOut);
-            if (isAvailable) {
-                available[tentId] = tent;
+        try {
+            // First try to get availability from API
+            const response = await fetch(`${this.apiBase}/availability?check_in=${checkIn}&check_out=${checkOut}`);
+            if (!response.ok) {
+                throw new Error('Failed to get availability from API');
+            }
+            const bookedDates = await response.json();
+            console.log('Booked dates from API:', bookedDates);
+            
+            // Check each tent's availability
+            for (const [tentId, tent] of Object.entries(this.tents)) {
+                const isBooked = bookedDates[tentId] && bookedDates[tentId].length > 0;
+                console.log(`Tent ${tentId} is ${isBooked ? 'booked' : 'available'}`);
+                if (!isBooked) {
+                    available[tentId] = tent;
+                }
+            }
+        } catch (error) {
+            console.error('Error getting availability from API:', error);
+            // Fallback to local check
+            for (const [tentId, tent] of Object.entries(this.tents)) {
+                const isAvailable = await this.isAvailable(tentId, checkIn, checkOut);
+                console.log(`Tent ${tentId} is ${isAvailable ? 'available' : 'booked'} (local check)`);
+                if (isAvailable) {
+                    available[tentId] = tent;
+                }
             }
         }
         
+        console.log('Final available tents:', available);
         return available;
     }
 

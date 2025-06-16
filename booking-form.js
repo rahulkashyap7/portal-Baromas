@@ -243,9 +243,50 @@ class BookingForm {
     }
 
     setMinDates() {
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('modal-checkin').min = today;
-        document.getElementById('modal-checkout').min = today;
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        // Format dates for input fields
+        const todayStr = today.toISOString().split('T')[0];
+        const tomorrowStr = tomorrow.toISOString().split('T')[0];
+        
+        // Set min dates for inputs
+        const checkInInput = document.getElementById('modal-checkin');
+        const checkOutInput = document.getElementById('modal-checkout');
+        
+        checkInInput.min = todayStr;
+        checkOutInput.min = tomorrowStr;
+        
+        // Add change event listeners for date validation
+        checkInInput.addEventListener('change', () => {
+            const checkInDate = new Date(checkInInput.value);
+            const nextDay = new Date(checkInDate);
+            nextDay.setDate(nextDay.getDate() + 1);
+            
+            // Update checkout min date to be the day after check-in
+            checkOutInput.min = nextDay.toISOString().split('T')[0];
+            
+            // If checkout date is before or same as check-in, reset it
+            if (checkOutInput.value && new Date(checkOutInput.value) <= checkInDate) {
+                checkOutInput.value = '';
+                this.bookingData.checkOut = null;
+                this.updateAvailableTents();
+            }
+        });
+        
+        checkOutInput.addEventListener('change', () => {
+            const checkInDate = new Date(checkInInput.value);
+            const checkOutDate = new Date(checkOutInput.value);
+            
+            // If checkout date is before or same as check-in, show error
+            if (checkOutDate <= checkInDate) {
+                alert('Check-out date must be after check-in date');
+                checkOutInput.value = '';
+                this.bookingData.checkOut = null;
+                this.updateAvailableTents();
+            }
+        });
     }
 
     prefillFromMainForm() {
@@ -268,15 +309,20 @@ class BookingForm {
         this.updateAvailableTents();
     }
 
-    updateAvailableTents() {
+    async updateAvailableTents() {
         const checkIn = document.getElementById('modal-checkin').value;
         const checkOut = document.getElementById('modal-checkout').value;
-
         const container = document.getElementById('available-tents');
+        
+        console.log('Checking availability with dates:', { checkIn, checkOut });
+        console.log('BookingSystem instance:', window.bookingSystem);
         
         // If no dates selected, show all tents with a message
         if (!checkIn || !checkOut) {
+            console.log('No dates selected, showing all tents');
             const allTents = window.bookingSystem.tents;
+            console.log('All tents:', allTents);
+            
             container.innerHTML = Object.entries(allTents).map(([tentId, tent]) => `
                 <div class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary transition-colors tent-option" data-tent-id="${tentId}">
                     <div class="flex justify-between items-center">
@@ -301,33 +347,71 @@ class BookingForm {
             return;
         }
 
-        const availableTents = window.bookingSystem.getAvailableTents(checkIn, checkOut);
-        
-        if (Object.keys(availableTents).length === 0) {
-            container.innerHTML = '<p class="text-red-600 text-center py-4">No tents available for selected dates. Please choose different dates.</p>';
-            document.getElementById('next-step-1').disabled = true;
-            return;
-        }
+        try {
+            // Show loading state
+            container.innerHTML = '<div class="text-center py-4"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div><p class="mt-2 text-gray-600">Checking availability...</p></div>';
+            
+            // Get available tents
+            console.log('Calling getAvailableTents with dates:', { checkIn, checkOut });
+            const availableTents = await window.bookingSystem.getAvailableTents(checkIn, checkOut);
+            console.log('Available tents response:', availableTents);
+            
+            // Check if bookingSystem is working
+            if (!window.bookingSystem) {
+                console.error('BookingSystem not initialized');
+                container.innerHTML = '<div class="text-center py-4"><p class="text-red-600">Error: Booking system not initialized. Please refresh the page.</p></div>';
+                return;
+            }
+            
+            // Check if tents exist
+            if (!window.bookingSystem.tents) {
+                console.error('No tents found in booking system');
+                container.innerHTML = '<div class="text-center py-4"><p class="text-red-600">Error: No tents found. Please refresh the page.</p></div>';
+                return;
+            }
+            
+            if (!availableTents || Object.keys(availableTents).length === 0) {
+                console.log('No tents available for selected dates');
+                container.innerHTML = '<div class="text-center py-4"><p class="text-red-600">No tents available for selected dates. Please choose different dates.</p></div>';
+                document.getElementById('next-step-1').disabled = true;
+                return;
+            }
 
-        container.innerHTML = Object.entries(availableTents).map(([tentId, tent]) => `
-            <div class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary transition-colors tent-option" data-tent-id="${tentId}">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h4 class="font-semibold">${tent.name}</h4>
-                        <p class="text-sm text-gray-600">Max ${tent.maxGuests} guests</p>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-lg font-bold text-primary">₹${tent.price}</div>
-                        <div class="text-sm text-gray-600">per night</div>
+            // Display available tents
+            console.log('Displaying available tents:', availableTents);
+            container.innerHTML = Object.entries(availableTents).map(([tentId, tent]) => `
+                <div class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary transition-colors tent-option" data-tent-id="${tentId}">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-semibold">${tent.name}</h4>
+                            <p class="text-sm text-gray-600">Max ${tent.maxGuests} guests</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg font-bold text-primary">₹${tent.price}</div>
+                            <div class="text-sm text-gray-600">per night</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `).join('');
+            `).join('');
 
-        // Add click listeners to tent options
-        container.querySelectorAll('.tent-option').forEach(option => {
-            option.addEventListener('click', () => this.selectTent(option));
-        });
+            // Add click listeners to tent options
+            container.querySelectorAll('.tent-option').forEach(option => {
+                option.addEventListener('click', () => this.selectTent(option));
+            });
+            
+            // Reset selection if previously selected tent is no longer available
+            if (this.bookingData.tentId && !availableTents[this.bookingData.tentId]) {
+                console.log('Previously selected tent no longer available');
+                this.bookingData.tentId = null;
+                this.updatePricing();
+            }
+            
+            this.validateStep1();
+        } catch (error) {
+            console.error('Error updating available tents:', error);
+            container.innerHTML = '<div class="text-center py-4"><p class="text-red-600">Error checking availability. Please try again.</p></div>';
+            document.getElementById('next-step-1').disabled = true;
+        }
     }
 
     selectTent(selectedOption) {
@@ -340,11 +424,6 @@ class BookingForm {
         selectedOption.classList.add('border-primary', 'bg-blue-50');
         
         this.bookingData.tentId = selectedOption.dataset.tentId;
-        
-        // Update date inputs to show availability for selected tent
-        document.getElementById('modal-checkin').addEventListener('change', () => this.updateAvailableTents());
-        document.getElementById('modal-checkout').addEventListener('change', () => this.updateAvailableTents());
-        
         this.updatePricing();
         this.validateStep1();
     }
@@ -354,7 +433,11 @@ class BookingForm {
         const checkOut = document.getElementById('modal-checkout').value;
         const tentId = this.bookingData.tentId;
 
-        if (!checkIn || !checkOut || !tentId) return;
+        if (!checkIn || !checkOut || !tentId) {
+            document.getElementById('modal-total-price').textContent = '₹0';
+            document.getElementById('modal-advance-price').textContent = '₹0';
+            return;
+        }
 
         const totalAmount = window.bookingSystem.calculatePrice(tentId, checkIn, checkOut);
         const advanceAmount = Math.round(totalAmount * 0.3);
