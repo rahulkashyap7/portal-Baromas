@@ -1,0 +1,138 @@
+
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+
+      .calendar-day {
+          width: 40px;
+          height: 40px;
+      }
+
+      .calendar-day.available {
+          background-color: rgba(16, 185, 129, 0.1);
+          color: #10b981;
+      }
+
+      .calendar-day.booked {
+          background-color: rgba(239, 68, 68, 0.1);
+          color: #ef4444;
+      }
+
+      .calendar-day:hover:not(.disabled) {
+          background-color: rgba(59, 130, 246, 0.1);
+          color: #3b82f6;
+      }
+
+      .tent-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
+
+      .custom-checkbox {
+          position: relative;
+          padding-left: 30px;
+          cursor: pointer;
+      }
+
+      .custom-checkbox input {
+          position: absolute;
+          opacity: 0;
+          cursor: pointer;
+      }
+
+      .checkmark {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 20px;
+          width: 20px;
+          background-color: #fff;
+          border: 2px solid #e5e7eb;
+          border-radius: 4px;
+      }
+
+      .custom-checkbox:hover input ~ .checkmark {
+          border-color: #3b82f6;
+      }
+
+      .custom-checkbox input:checked ~ .checkmark {
+          background-color: #3b82f6;
+          border-color: #3b82f6;
+      }
+
+      .checkmark:after {
+          content: "";
+          position: absolute;
+          display: none;
+      }
+
+      .custom-checkbox input:checked ~ .checkmark:after {
+          display: block;
+      }
+
+      .custom-checkbox .checkmark:after {
+          left: 6px;
+          top: 2px;
+          width: 6px;
+          height: 12px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+      }
+
+      .switch {
+          position: relative;
+          display: inline-block;
+          width: 48px;
+          height: 24px;
+      }
+
+      .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+      }
+
+      .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #e5e7eb;
+          transition: .4s;
+          border-radius: 24px;
+      }
+
+      .slider:before {
+          position: absolute;
+          content: "";
+          height: 18px;
+          width: 18px;
+          left: 3px;
+          bottom: 3px;
+          background-color: white;
+          transition: .4s;
+          border-radius: 50%;
+      }
+
+      input:checked + .slider {
+          background-color: #3b82f6;
+      }
+
+      input:checked + .slider:before {
+          transform: translateX(24px);
+      }
+
+      @media (max-width: 768px) {
+          .calendar-day {
+              width: 35px;
+              height: 35px;
+              font-size: 0.875rem;
+          }
+      }

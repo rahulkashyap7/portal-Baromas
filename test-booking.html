@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking System Test</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: "#3b82f6", secondary: "#10b981" },
+                    borderRadius: {
+                        button: "8px",
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">Booking System Test</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Test Booking Form -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Test Booking</h2>
+                <button id="test-booking-btn" class="bg-primary text-white px-4 py-2 rounded-button hover:bg-blue-600 transition-colors">
+                    Open Booking Modal
+                </button>
+                
+                <div class="mt-4">
+                    <h3 class="font-medium mb-2">Test Steps:</h3>
+                    <ol class="list-decimal list-inside space-y-1 text-sm text-gray-600">
+                        <li>Click "Open Booking Modal"</li>
+                        <li>Select check-in and check-out dates</li>
+                        <li>Choose a tent</li>
+                        <li>Fill customer information</li>
+                        <li>Click "Pay Now & Confirm Booking"</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- System Status -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">System Status</h2>
+                <div id="system-status" class="space-y-2">
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 bg-gray-300 rounded-full mr-2"></span>
+                        <span>Loading...</span>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h3 class="font-medium mb-2">Console Logs:</h3>
+                    <div id="console-logs" class="bg-gray-100 p-3 rounded text-sm font-mono h-32 overflow-y-auto">
+                        <!-- Console logs will appear here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Test Results -->
+        <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Test Results</h2>
+            <div id="test-results" class="space-y-2">
+                <p class="text-gray-600">No tests run yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="booking-system.js"></script>
+    <script src="booking-form.js"></script>
+    <script>
+        // Test script
+        document.addEventListener('DOMContentLoaded', function() {
+            const testBtn = document.getElementById('test-booking-btn');
+            const systemStatus = document.getElementById('system-status');
+            const consoleLogs = document.getElementById('console-logs');
+            const testResults = document.getElementById('test-results');
+            
+            // Check system status
+            function updateSystemStatus() {
+                const status = [];
+                
+                // Check if booking system is loaded
+                if (window.bookingSystem) {
+                    status.push({
+                        name: 'Booking System',
+                        status: 'success',
+                        message: 'Loaded successfully'
+                    });
+                } else {
+                    status.push({
+                        name: 'Booking System',
+                        status: 'error',
+                        message: 'Not loaded'
+                    });
+                }
+                
+                // Check if booking form is loaded
+                if (window.bookingForm) {
+                    status.push({
+                        name: 'Booking Form',
+                        status: 'success',
+                        message: 'Loaded successfully'
+                    });
+                } else {
+                    status.push({
+                        name: 'Booking Form',
+                        status: 'error',
+                        message: 'Not loaded'
+                    });
+                }
+                
+                // Check tents data
+                if (window.bookingSystem && window.bookingSystem.tents) {
+                    const tentCount = Object.keys(window.bookingSystem.tents).length;
+                    status.push({
+                        name: 'Tents Data',
+                        status: 'success',
+                        message: `${tentCount} tents loaded`
+                    });
+                } else {
+                    status.push({
+                        name: 'Tents Data',
+                        status: 'error',
+                        message: 'No tents data'
+                    });
+                }
+                
+                // Update status display
+                systemStatus.innerHTML = status.map(item => `
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 ${item.status === 'success' ? 'bg-green-500' : 'bg-red-500'} rounded-full mr-2"></span>
+                        <span class="font-medium">${item.name}:</span>
+                        <span class="ml-2 text-gray-600">${item.message}</span>
+                    </div>
+                `).join('');
+            }
+            
+            // Capture console logs
+            const originalLog = console.log;
+            const originalError = console.error;
+            
+            console.log = function(...args) {
+                originalLog.apply(console, args);
+                const logEntry = document.createElement('div');
+                logEntry.textContent = args.join(' ');
+                logEntry.className = 'text-green-600';
+                consoleLogs.appendChild(logEntry);
+                consoleLogs.scrollTop = consoleLogs.scrollHeight;
+            };
+            
+            console.error = function(...args) {
+                originalError.apply(console, args);
+                const logEntry = document.createElement('div');
+                logEntry.textContent = args.join(' ');
+                logEntry.className = 'text-red-600';
+                consoleLogs.appendChild(logEntry);
+                consoleLogs.scrollTop = consoleLogs.scrollHeight;
+            };
+            
+            // Test booking button
+            testBtn.addEventListener('click', function() {
+                if (window.bookingForm) {
+                    window.bookingForm.openModal();
+                    testResults.innerHTML = '<p class="text-green-600">✓ Booking modal opened successfully</p>';
+                } else {
+                    testResults.innerHTML = '<p class="text-red-600">✗ Booking form not available</p>';
+                }
+            });
+            
+            // Update status after a short delay
+            setTimeout(updateSystemStatus, 500);
+            
+            // Add some test data
+            console.log('Test page loaded successfully');
+            console.log('Booking system status:', !!window.bookingSystem);
+            console.log('Booking form status:', !!window.bookingForm);
+        });
+    </script>
+</body>
+</html> 

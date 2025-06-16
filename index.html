@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Baromas Resort and Camping - Luxury Camping Experience</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#3b82f6", secondary: "#10b981" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Booking System Scripts -->
+    <script src="booking-system-api.js"></script>
+    <script src="booking-form.js"></script>
+    <script src="index.js"></script>
+  </head>
+  <body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+      <div
+        class="container mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <div class="flex items-center">
+          <h1 class="text-2xl font-['Pacifico'] text-primary">Baromas</h1>
+          <span class="hidden md:inline-block ml-2 text-sm text-gray-600"
+            >Resort and Camping</span
+          >
+        </div>
+
+        <nav class="hidden md:flex items-center space-x-8">
+          <a href="#" class="text-gray-700 hover:text-primary transition-colors"
+            >Home</a
+          >
+          <a
+            href="#tents"
+            class="text-gray-700 hover:text-primary transition-colors"
+            >Our Tents</a
+          >
+          <a
+            href="#availability"
+            class="text-gray-700 hover:text-primary transition-colors"
+            >Availability</a
+          >
+          <a href="#" class="text-gray-700 hover:text-primary transition-colors"
+            >Gallery</a
+          >
+          <a href="#" class="text-gray-700 hover:text-primary transition-colors"
+            >Contact</a
+          >
+        </nav>
+
+        <div class="flex items-center space-x-4">
+          <button
+            class="hidden md:block bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-blue-600 transition-colors"
+          >
+            Book Now
+          </button>
+          <button
+            class="md:hidden w-10 h-10 flex items-center justify-center text-gray-700"
+            id="mobile-menu-button"
+          >
+            <i class="ri-menu-line ri-lg"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div
+        class="md:hidden hidden bg-white absolute w-full shadow-md"
+        id="mobile-menu"
+      >
+        <div class="container mx-auto px-4 py-3 flex flex-col space-y-3">
+          <a
+            href="#"
+            class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100"
+            >Home</a
+          >
+          <a
+            href="#tents"
+            class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100"
+            >Our Tents</a
+          >
+          <a
+            href="#availability"
+            class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100"
+            >Availability</a
+          >
+          <a
+            href="#"
+            class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100"
+            >Gallery</a
+          >
+          <a
+            href="#"
+            class="text-gray-700 hover:text-primary transition-colors py-2"
+            >Contact</a
+          >
+          <button
+            class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap hover:bg-blue-600 transition-colors"
+          >
+            Book Now
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative h-[500px] md:h-[600px] overflow-hidden">
+      <div
+        class="absolute inset-0 bg-cover bg-center"
+        style="background-image: url('https://readdy.ai/api/search-image?query=Luxury%20camping%20resort%20with%20elegant%20tents%20in%20a%20serene%20natural%20setting%2C%20surrounded%20by%20lush%20trees%20and%20mountains%2C%20golden%20hour%20lighting%20creating%20a%20warm%20and%20inviting%20atmosphere%2C%20professional%20photography%20with%20high-end%20resort%20ambiance%2C%20perfect%20for%20a%20glamping%20vacation&width=1600&height=900&seq=hero1&orientation=landscape');"
+      ></div>
+      <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+      <div class="absolute inset-0 flex items-center">
+        <div class="container mx-auto px-4">
+          <div class="max-w-2xl text-white">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+              Experience Luxury in Nature's Embrace
+            </h1>
+            <p class="text-lg md:text-xl mb-8">
+              Discover the perfect blend of comfort and wilderness at Baromas
+              Resort and Camping. Our premium tents offer an unforgettable
+              glamping experience.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <button
+                class="bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-button whitespace-nowrap transition-colors"
+                id="hero-book-now"
+              >
+                Book Your Stay
+              </button>
+              <button
+                class="bg-white hover:bg-gray-100 text-gray-800 px-6 py-3 rounded-button whitespace-nowrap transition-colors"
+              >
+                Explore Tents
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Info Section -->
+    <section class="bg-white py-10">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="flex items-start">
+            <div
+              class="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full text-primary mr-4"
+            >
+              <i class="ri-map-pin-line ri-lg"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold mb-2">Prime Location</h3>
+              <p class="text-gray-600">
+                Nestled in the heart of nature, just 2 hours from the city
+                center.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-start">
+            <div
+              class="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full text-primary mr-4"
+            >
+              <i class="ri-hotel-line ri-lg"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold mb-2">Premium Tents</h3>
+              <p class="text-gray-600">
+                8 luxury tents with modern amenities for a comfortable stay.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-start">
+            <div
+              class="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full text-primary mr-4"
+            >
+              <i class="ri-24-hours-line ri-lg"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold mb-2">24/7 Service</h3>
+              <p class="text-gray-600">
+                Round-the-clock assistance to ensure a memorable experience.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Our Tents Section -->
+    <section id="tents" class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Our Luxury Tents</h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Choose from our collection of premium tents, each designed to
+            provide comfort while keeping you connected to nature.
+          </p>
+        </div>
+
+        <!-- Tent Categories -->
+        <div class="mb-12">
+          <h3 class="text-2xl font-semibold mb-6">Triveni Tents</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Triveni Tent 1 -->
+            <div
+              class="tent-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300"
+            >
+              <div class="h-48 overflow-hidden">
+                <img
+                  src="https://readdy.ai/api/search-image?query=Luxury%20safari%20tent%20with%20wooden%20deck%2C%20king-sized%20bed%2C%20elegant%20furnishings%2C%20warm%20lighting%2C%20mountain%20view%2C%20spacious%20interior%20with%20rustic%20luxury%20decor%2C%20perfect%20for%20glamping%20experience&width=600&height=400&seq=tent1&orientation=landscape"
+                  alt="Triveni Tent 1"
+                  class="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-semibold">Triveni Tent 1</h4>
+                  <span
+                    class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full"
+                    >Available</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-4">
+                  Luxurious tent with panoramic mountain views, perfect for
+                  couples seeking a romantic getaway.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-user-line mr-1"></i> 2 Guests
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-hotel-bed-line mr-1"></i> King Bed
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-wifi-line mr-1"></i> Wi-Fi
+                  </span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="text-primary font-bold">
+                    $149<span class="text-sm text-gray-500 font-normal">
+                      / night</span
+                    >
+                  </div>
+                  <div class="flex gap-2">
+                    <button
+                      class="book-tent bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="triveni-1"
+                    >
+                      Book Now
+                    </button>
+                    <button
+                      class="view-tent-details bg-primary hover:bg-blue-600 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="Triveni Tent 1"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Triveni Tent 2 -->
+            <div
+              class="tent-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300"
+            >
+              <div class="h-48 overflow-hidden">
+                <img
+                  src="https://readdy.ai/api/search-image?query=Luxury%20safari%20tent%20with%20private%20deck%2C%20queen-sized%20bed%2C%20elegant%20furnishings%2C%20warm%20lighting%2C%20forest%20view%2C%20spacious%20interior%20with%20rustic%20luxury%20decor%2C%20perfect%20for%20glamping%20experience&width=600&height=400&seq=tent2&orientation=landscape"
+                  alt="Triveni Tent 2"
+                  class="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-semibold">Triveni Tent 2</h4>
+                  <span
+                    class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full"
+                    >Available</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-4">
+                  Elegant tent with a private deck overlooking the forest, ideal
+                  for nature enthusiasts.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-user-line mr-1"></i> 2 Guests
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-hotel-bed-line mr-1"></i> Queen Bed
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-wifi-line mr-1"></i> Wi-Fi
+                  </span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="text-primary font-bold">
+                    $139<span class="text-sm text-gray-500 font-normal">
+                      / night</span
+                    >
+                  </div>
+                  <div class="flex gap-2">
+                    <button
+                      class="book-tent bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="triveni-2"
+                    >
+                      Book Now
+                    </button>
+                    <button
+                      class="view-tent-details bg-primary hover:bg-blue-600 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="Triveni Tent 2"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Triveni Tent 3 -->
+            <div
+              class="tent-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300"
+            >
+              <div class="h-48 overflow-hidden">
+                <img
+                  src="https://readdy.ai/api/search-image?query=Luxury%20safari%20tent%20with%20private%20balcony%2C%20king-sized%20bed%2C%20elegant%20furnishings%2C%20warm%20lighting%2C%20lake%20view%2C%20spacious%20interior%20with%20rustic%20luxury%20decor%2C%20perfect%20for%20glamping%20experience&width=600&height=400&seq=tent3&orientation=landscape"
+                  alt="Triveni Tent 3"
+                  class="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-semibold">Triveni Tent 3</h4>
+                  <span
+                    class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full"
+                    >Booked</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-4">
+                  Spacious tent with a private balcony offering stunning lake
+                  views and premium amenities.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-user-line mr-1"></i> 3 Guests
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-hotel-bed-line mr-1"></i> King Bed
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-wifi-line mr-1"></i> Wi-Fi
+                  </span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="text-primary font-bold">
+                    $159<span class="text-sm text-gray-500 font-normal">
+                      / night</span
+                    >
+                  </div>
+                  <div class="flex gap-2">
+                    <button
+                      class="book-tent bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="triveni-3"
+                    >
+                      Book Now
+                    </button>
+                    <button
+                      class="view-tent-details bg-gray-300 cursor-not-allowed text-gray-600 px-3 py-1.5 rounded-button whitespace-nowrap text-sm"
+                      data-tent="Triveni Tent 3"
+                      disabled
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-semibold mb-6">Panchvati Tents</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Panchvati Tent 1 -->
+            <div
+              class="tent-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300"
+            >
+              <div class="h-48 overflow-hidden">
+                <img
+                  src="https://readdy.ai/api/search-image?query=Family%20safari%20tent%20with%20multiple%20beds%2C%20elegant%20furnishings%2C%20warm%20lighting%2C%20garden%20view%2C%20spacious%20interior%20with%20rustic%20luxury%20decor%2C%20perfect%20for%20family%20glamping%20experience&width=600&height=400&seq=tent4&orientation=landscape"
+                  alt="Panchvati Tent 1"
+                  class="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-semibold">Panchvati Tent 1</h4>
+                  <span
+                    class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full"
+                    >Available</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-4">
+                  Family-friendly tent with multiple beds and a garden view,
+                  perfect for small families.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-user-line mr-1"></i> 4 Guests
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-hotel-bed-line mr-1"></i> 2 Queen Beds
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-wifi-line mr-1"></i> Wi-Fi
+                  </span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="text-primary font-bold">
+                    $179<span class="text-sm text-gray-500 font-normal">
+                      / night</span
+                    >
+                  </div>
+                  <div class="flex gap-2">
+                    <button
+                      class="book-tent bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="panchvati-1"
+                    >
+                      Book Now
+                    </button>
+                    <button
+                      class="view-tent-details bg-primary hover:bg-blue-600 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="Panchvati Tent 1"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panchvati Tent 2 -->
+            <div
+              class="tent-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300"
+            >
+              <div class="h-48 overflow-hidden">
+                <img
+                  src="https://readdy.ai/api/search-image?query=Luxury%20safari%20tent%20with%20outdoor%20seating%20area%2C%20king-sized%20bed%2C%20elegant%20furnishings%2C%20warm%20lighting%2C%20mountain%20view%2C%20spacious%20interior%20with%20rustic%20luxury%20decor%2C%20perfect%20for%20glamping%20experience&width=600&height=400&seq=tent5&orientation=landscape"
+                  alt="Panchvati Tent 2"
+                  class="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-semibold">Panchvati Tent 2</h4>
+                  <span
+                    class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full"
+                    >Available</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-4">
+                  Premium tent with an outdoor seating area and stunning
+                  mountain views for a relaxing stay.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-user-line mr-1"></i> 2 Guests
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-hotel-bed-line mr-1"></i> King Bed
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-wifi-line mr-1"></i> Wi-Fi
+                  </span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="text-primary font-bold">
+                    $169<span class="text-sm text-gray-500 font-normal">
+                      / night</span
+                    >
+                  </div>
+                  <div class="flex gap-2">
+                    <button
+                      class="book-tent bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="panchvati-2"
+                    >
+                      Book Now
+                    </button>
+                    <button
+                      class="view-tent-details bg-primary hover:bg-blue-600 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="Panchvati Tent 2"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panchvati Tent 3 -->
+            <div
+              class="tent-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300"
+            >
+              <div class="h-48 overflow-hidden">
+                <img
+                  src="https://readdy.ai/api/search-image?query=Luxury%20safari%20tent%20with%20private%20hot%20tub%2C%20king-sized%20bed%2C%20elegant%20furnishings%2C%20warm%20lighting%2C%20forest%20view%2C%20spacious%20interior%20with%20rustic%20luxury%20decor%2C%20perfect%20for%20glamping%20experience&width=600&height=400&seq=tent6&orientation=landscape"
+                  alt="Panchvati Tent 3"
+                  class="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-semibold">Panchvati Tent 3</h4>
+                  <span
+                    class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full"
+                    >Booked</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-4">
+                  Deluxe tent with a private hot tub and forest views, ideal for
+                  a luxurious retreat.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-user-line mr-1"></i> 2 Guests
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-hotel-bed-line mr-1"></i> King Bed
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-wifi-line mr-1"></i> Wi-Fi
+                  </span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="text-primary font-bold">
+                    $199<span class="text-sm text-gray-500 font-normal">
+                      / night</span
+                    >
+                  </div>
+                  <div class="flex gap-2">
+                    <button
+                      class="book-tent bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="panchvati-3"
+                    >
+                      Book Now
+                    </button>
+                    <button
+                      class="view-tent-details bg-gray-300 cursor-not-allowed text-gray-600 px-3 py-1.5 rounded-button whitespace-nowrap text-sm"
+                      data-tent="Panchvati Tent 3"
+                      disabled
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panchvati Tent 4 -->
+            <div
+              class="tent-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300"
+            >
+              <div class="h-48 overflow-hidden">
+                <img
+                  src="https://readdy.ai/api/search-image?query=Luxury%20safari%20tent%20with%20private%20dining%20area%2C%20queen-sized%20bed%2C%20elegant%20furnishings%2C%20warm%20lighting%2C%20valley%20view%2C%20spacious%20interior%20with%20rustic%20luxury%20decor%2C%20perfect%20for%20glamping%20experience&width=600&height=400&seq=tent7&orientation=landscape"
+                  alt="Panchvati Tent 4"
+                  class="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-semibold">Panchvati Tent 4</h4>
+                  <span
+                    class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full"
+                    >Available</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-4">
+                  Cozy tent with a private dining area and valley views, perfect
+                  for a romantic dinner.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-user-line mr-1"></i> 2 Guests
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-hotel-bed-line mr-1"></i> Queen Bed
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-wifi-line mr-1"></i> Wi-Fi
+                  </span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="text-primary font-bold">
+                    $159<span class="text-sm text-gray-500 font-normal">
+                      / night</span
+                    >
+                  </div>
+                  <div class="flex gap-2">
+                    <button
+                      class="book-tent bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="panchvati-4"
+                    >
+                      Book Now
+                    </button>
+                    <button
+                      class="view-tent-details bg-primary hover:bg-blue-600 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="Panchvati Tent 4"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panchvati Tent 5 -->
+            <div
+              class="tent-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300"
+            >
+              <div class="h-48 overflow-hidden">
+                <img
+                  src="https://readdy.ai/api/search-image?query=Luxury%20safari%20tent%20with%20outdoor%20shower%2C%20king-sized%20bed%2C%20elegant%20furnishings%2C%20warm%20lighting%2C%20river%20view%2C%20spacious%20interior%20with%20rustic%20luxury%20decor%2C%20perfect%20for%20glamping%20experience&width=600&height=400&seq=tent8&orientation=landscape"
+                  alt="Panchvati Tent 5"
+                  class="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-3">
+                  <h4 class="text-xl font-semibold">Panchvati Tent 5</h4>
+                  <span
+                    class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full"
+                    >Available</span
+                  >
+                </div>
+                <p class="text-gray-600 mb-4">
+                  Unique tent with an outdoor shower and river views, offering a
+                  refreshing experience.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-user-line mr-1"></i> 2 Guests
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-hotel-bed-line mr-1"></i> King Bed
+                  </span>
+                  <span
+                    class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  >
+                    <i class="ri-wifi-line mr-1"></i> Wi-Fi
+                  </span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="text-primary font-bold">
+                    $189<span class="text-sm text-gray-500 font-normal">
+                      / night</span
+                    >
+                  </div>
+                  <div class="flex gap-2">
+                    <button
+                      class="book-tent bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="panchvati-5"
+                    >
+                      Book Now
+                    </button>
+                    <button
+                      class="view-tent-details bg-primary hover:bg-blue-600 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors"
+                      data-tent="Panchvati Tent 5"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Availability Section -->
+    <section id="availability" class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Check Availability</h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Plan your stay by checking our real-time availability calendar.
+            Select your dates to see which tents are available for booking.
+          </p>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+          <!-- Calendar -->
+          <div class="lg:w-2/3 bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-xl font-semibold">June 2025</h3>
+              <div class="flex space-x-2">
+                <button
+                  class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+                  id="prev-month"
+                >
+                  <i class="ri-arrow-left-s-line"></i>
+                </button>
+                <button
+                  class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+                  id="next-month"
+                >
+                  <i class="ri-arrow-right-s-line"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <div class="grid grid-cols-7 gap-1 mb-2">
+                <div class="text-center text-gray-500 text-sm font-medium">
+                  Sun
+                </div>
+                <div class="text-center text-gray-500 text-sm font-medium">
+                  Mon
+                </div>
+                <div class="text-center text-gray-500 text-sm font-medium">
+                  Tue
+                </div>
+                <div class="text-center text-gray-500 text-sm font-medium">
+                  Wed
+                </div>
+                <div class="text-center text-gray-500 text-sm font-medium">
+                  Thu
+                </div>
+                <div class="text-center text-gray-500 text-sm font-medium">
+                  Fri
+                </div>
+                <div class="text-center text-gray-500 text-sm font-medium">
+                  Sat
+                </div>
+              </div>
+
+              <div class="grid grid-cols-7 gap-1" id="calendar-days">
+                <!-- Calendar days will be generated by JavaScript -->
+              </div>
+            </div>
+
+            <div class="flex items-center justify-center space-x-6">
+              <div class="flex items-center">
+                <div
+                  class="w-4 h-4 rounded-full bg-green-100 border border-green-500 mr-2"
+                ></div>
+                <span class="text-sm text-gray-600">Available</span>
+              </div>
+              <div class="flex items-center">
+                <div
+                  class="w-4 h-4 rounded-full bg-red-100 border border-red-500 mr-2"
+                ></div>
+                <span class="text-sm text-gray-600">Booked</span>
+              </div>
+              <div class="flex items-center">
+                <div
+                  class="w-4 h-4 rounded-full bg-blue-100 border border-blue-500 mr-2"
+                ></div>
+                <span class="text-sm text-gray-600">Selected</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking Form -->
+          <div class="lg:w-1/3 bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-semibold mb-6">Book Your Stay</h3>
+
+            <form id="booking-form">
+              <div class="mb-4">
+                <label
+                  class="block text-gray-700 text-sm font-medium mb-2"
+                  for="check-in-date"
+                >
+                  Check-in Date
+                </label>
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="check-in-date"
+                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="Select date"
+                    readonly
+                  />
+                  <div
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  >
+                    <i class="ri-calendar-line"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label
+                  class="block text-gray-700 text-sm font-medium mb-2"
+                  for="check-out-date"
+                >
+                  Check-out Date
+                </label>
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="check-out-date"
+                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="Select date"
+                    readonly
+                  />
+                  <div
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  >
+                    <i class="ri-calendar-line"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label
+                  class="block text-gray-700 text-sm font-medium mb-2"
+                  for="tent-type"
+                >
+                  Tent Type
+                </label>
+                <div class="relative">
+                  <select
+                    id="tent-type"
+                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none pr-8"
+                  >
+                    <option value="">Select a tent</option>
+                    <option value="triveni-1">Triveni Tent 1</option>
+                    <option value="triveni-2">Triveni Tent 2</option>
+                    <option value="triveni-3">Triveni Tent 3</option>
+                    <option value="panchvati-1">Panchvati Tent 1</option>
+                    <option value="panchvati-2">Panchvati Tent 2</option>
+                    <option value="panchvati-3">Panchvati Tent 3</option>
+                    <option value="panchvati-4">Panchvati Tent 4</option>
+                    <option value="panchvati-5">Panchvati Tent 5</option>
+                  </select>
+                  <div
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+                  >
+                    <i class="ri-arrow-down-s-line"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label
+                  class="block text-gray-700 text-sm font-medium mb-2"
+                  for="guests"
+                >
+                  Number of Guests
+                </label>
+                <div class="flex items-center">
+                  <button
+                    type="button"
+                    id="decrease-guests"
+                    class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-l text-gray-600 hover:bg-gray-100 transition-colors"
+                  >
+                    <i class="ri-subtract-line"></i>
+                  </button>
+                  <input
+                    type="number"
+                    id="guests"
+                    class="w-full h-10 px-4 py-2 border-t border-b border-gray-300 text-center focus:outline-none"
+                    value="2"
+                    min="1"
+                    max="4"
+                  />
+                  <button
+                    type="button"
+                    id="increase-guests"
+                    class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-r text-gray-600 hover:bg-gray-100 transition-colors"
+                  >
+                    <i class="ri-add-line"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mb-6">
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-700 text-sm font-medium">Total</span>
+                  <span class="text-primary font-bold text-xl" id="total-price"
+                    >$0</span
+                  >
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                class="w-full bg-primary hover:bg-blue-600 text-white py-3 rounded-button whitespace-nowrap transition-colors"
+              >
+                Proceed to Booking
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Resort Features</h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Enjoy a range of amenities and activities during your stay at
+            Baromas Resort and Camping.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <div
+              class="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-blue-100 rounded-full text-primary"
+            >
+              <i class="ri-restaurant-line ri-2x"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Gourmet Dining</h3>
+            <p class="text-gray-600">
+              Enjoy delicious meals prepared with locally sourced ingredients at
+              our on-site restaurant.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <div
+              class="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-blue-100 rounded-full text-primary"
+            >
+              <i class="ri-bonfire-line ri-2x"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Campfire Nights</h3>
+            <p class="text-gray-600">
+              Gather around the campfire for an evening of storytelling, music,
+              and stargazing.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <div
+              class="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-blue-100 rounded-full text-primary"
+            >
+              <i class="ri-footprint-line ri-2x"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Nature Trails</h3>
+            <p class="text-gray-600">
+              Explore the surrounding wilderness on our guided nature walks and
+              hiking trails.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <div
+              class="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-blue-100 rounded-full text-primary"
+            >
+              <i class="ri-spa-line ri-2x"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Wellness Activities</h3>
+            <p class="text-gray-600">
+              Rejuvenate with yoga sessions, meditation, and spa treatments
+              amidst nature.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Guest Experiences</h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Hear what our guests have to say about their stay at Baromas Resort
+            and Camping.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-gray-50 rounded-lg p-6">
+            <div class="flex items-center mb-4">
+              <div class="text-yellow-400 flex">
+                <i class="ri-star-fill"></i>
+                <i class="ri-star-fill"></i>
+                <i class="ri-star-fill"></i>
+                <i class="ri-star-fill"></i>
+                <i class="ri-star-fill"></i>
+              </div>
+            </div>
+            <p class="text-gray-700 mb-4">
+              "An absolutely magical experience! The Triveni Tent was luxurious
+              yet connected to nature. The staff was attentive, and the food was
+              exceptional. Can't wait to return!"
+            </p>
+            <div class="flex items-center">
+              <div
+                class="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full text-primary mr-3"
+              >
+                <i class="ri-user-line"></i>
+              </div>
+              <div>
+                <h4 class="font-medium">Rebecca Thompson</h4>
+                <p class="text-sm text-gray-500">Stayed in Triveni Tent 2</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 rounded-lg p-6">
+            <div class="flex items-center mb-4">
+              <div class="text-yellow-400 flex">
+                <i class="ri-star-fill"></i>
+                <i class="ri-star-fill"></i>
+                <i class="ri-star-fill"></i>
+                <i class="ri-star-fill"></i>
+                <i class="ri-star-fill"></i>
+              </div>
+            </div>
+            <p class="text-gray-700 mb-4">
+              "Perfect family getaway! Our kids loved the Panchvati Tent and all
+              the outdoor activities. The campfire night was the highlight of
+              our trip. Highly recommend for families!"
+            </p>
+            <div class="flex items-center">
+              <div
+                class="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full text-primary mr-3"
+              >
+                <i class="ri-user-line"></i>
+              </div>
+              <div>
+                <h4 class="font-medium">Michael Anderson</h4>
+                <p class="text-sm text-gray-500">Stayed in Panchvati Tent 1</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 rounded-lg p-6">
+            <div class="flex items-center mb-4">
+              <div class="text-yellow-400 flex">
+                <i class="ri-star-fill"></i>
+                <i class="ri-star-fill"></i>
+                <i class="ri-star-fill"></i>
+                <i class="ri-star-fill"></i>
+                <i class="ri-star-half-fill"></i>
+              </div>
+            </div>
+            <p class="text-gray-700 mb-4">
+              "A perfect blend of luxury and wilderness. The tent was
+              comfortable and well-equipped, the views were breathtaking, and
+              the peace and quiet was exactly what we needed."
+            </p>
+            <div class="flex items-center">
+              <div
+                class="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full text-primary mr-3"
+              >
+                <i class="ri-user-line"></i>
+              </div>
+              <div>
+                <h4 class="font-medium">Jennifer & David Chen</h4>
+                <p class="text-sm text-gray-500">Stayed in Panchvati Tent 5</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-gray-900 text-white">
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold mb-6">
+          Ready for an Unforgettable Camping Experience?
+        </h2>
+        <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+          Book your stay now and create memories that will last a lifetime.
+        </p>
+        <button
+          class="bg-primary hover:bg-blue-600 text-white px-8 py-3 rounded-button whitespace-nowrap text-lg transition-colors"
+        >
+          Book Your Adventure
+        </button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <h3 class="text-2xl font-['Pacifico'] mb-4">Baromas</h3>
+            <p class="text-gray-400 mb-4">
+              Experience luxury camping in the heart of nature. Our premium
+              tents offer comfort without compromising the wilderness
+              experience.
+            </p>
+            <div class="flex space-x-4">
+              <a
+                href="#"
+                class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors"
+              >
+                <i class="ri-facebook-fill"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors"
+              >
+                <i class="ri-instagram-line"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-primary transition-colors"
+              >
+                <i class="ri-twitter-x-line"></i>
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Home</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#tents"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Our Tents</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#availability"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Availability</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Gallery</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Contact Us</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-lg font-semibold mb-4">Contact Information</h4>
+            <ul class="space-y-2">
+              <li class="flex items-start">
+                <i class="ri-map-pin-line mt-1 mr-2"></i>
+                <span class="text-gray-400"
+                  >123 Nature Valley, Wilderness County, WC 12345</span
+                >
+              </li>
+              <li class="flex items-center">
+                <i class="ri-phone-line mr-2"></i>
+                <span class="text-gray-400">+1 (555) 123-4567</span>
+              </li>
+              <li class="flex items-center">
+                <i class="ri-mail-line mr-2"></i>
+                <span class="text-gray-400">info@baromasresort.com</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-lg font-semibold mb-4">Newsletter</h4>
+            <p class="text-gray-400 mb-4">
+              Subscribe to our newsletter for special offers and updates.
+            </p>
+            <form class="flex">
+              <input
+                type="email"
+                placeholder="Your email"
+                class="px-4 py-2 w-full rounded-l focus:outline-none text-gray-800"
+              />
+              <button
+                type="submit"
+                class="bg-primary hover:bg-blue-600 px-4 py-2 rounded-r whitespace-nowrap transition-colors"
+              >
+                Subscribe
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div
+          class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center"
+        >
+          <p class="text-gray-400 text-sm mb-4 md:mb-0">
+            © 2025 Baromas Resort and Camping. All rights reserved.
+          </p>
+          <div class="flex space-x-4">
+            <a
+              href="#"
+              class="text-gray-400 text-sm hover:text-white transition-colors"
+              >Privacy Policy</a
+            >
+            <a
+              href="#"
+              class="text-gray-400 text-sm hover:text-white transition-colors"
+              >Terms of Service</a
+            >
+            <a
+              href="#"
+              class="text-gray-400 text-sm hover:text-white transition-colors"
+              >Cancellation Policy</a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Tent Details Modal -->
+    <div
+      id="tent-details-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center hidden"
+    >
+      <div
+        class="absolute inset-0 bg-black bg-opacity-50"
+        id="modal-overlay"
+      ></div>
+      <div
+        class="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+      >
+        <button
+          class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10"
+          id="close-modal"
+        >
+          <i class="ri-close-line ri-lg"></i>
+        </button>
+
+        <div class="p-6" id="modal-content">
+          <!-- Content will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Booking Success Modal -->
+    <div
+      id="booking-success-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center hidden"
+    >
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+      <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div class="p-6 text-center">
+          <div
+            class="w-20 h-20 mx-auto mb-4 flex items-center justify-center bg-green-100 rounded-full text-green-500"
+          >
+            <i class="ri-check-line ri-2x"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-2">Booking Confirmed!</h3>
+          <p class="text-gray-600 mb-6">
+            Your booking has been successfully confirmed. We've sent a
+            confirmation email with all the details.
+          </p>
+          <div class="bg-gray-50 rounded p-4 mb-6 text-left">
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-600">Booking ID:</span>
+              <span class="font-medium" id="booking-id">BRM25061601</span>
+            </div>
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-600">Tent:</span>
+              <span class="font-medium" id="booking-tent">Triveni Tent 1</span>
+            </div>
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-600">Check-in:</span>
+              <span class="font-medium" id="booking-checkin"
+                >June 20, 2025</span
+              >
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Check-out:</span>
+              <span class="font-medium" id="booking-checkout"
+                >June 22, 2025</span
+              >
+            </div>
+          </div>
+          <button
+            class="bg-primary hover:bg-blue-600 text-white px-6 py-2 rounded-button whitespace-nowrap transition-colors"
+            id="close-success-modal"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <div
+      class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-40"
+    >
+      <div class="flex justify-around items-center py-3">
+        <a href="#" class="flex flex-col items-center text-primary">
+          <i class="ri-home-line ri-lg"></i>
+          <span class="text-xs mt-1">Home</span>
+        </a>
+        <a href="#tents" class="flex flex-col items-center text-gray-500">
+          <i class="ri-hotel-line ri-lg"></i>
+          <span class="text-xs mt-1">Tents</span>
+        </a>
+        <a
+          href="#availability"
+          class="flex flex-col items-center text-gray-500"
+        >
+          <i class="ri-calendar-line ri-lg"></i>
+          <span class="text-xs mt-1">Book</span>
+        </a>
+        <a href="#" class="flex flex-col items-center text-gray-500">
+          <i class="ri-customer-service-line ri-lg"></i>
+          <span class="text-xs mt-1">Contact</span>
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
