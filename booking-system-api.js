@@ -89,6 +89,41 @@ class BookingSystemAPI {
         }
     }
 
+    // Enhanced availability check with detailed information
+    async checkAvailabilityDetails(tentId, checkIn, checkOut) {
+        try {
+            const response = await fetch(`${this.apiBase}/availability?check_in=${checkIn}&check_out=${checkOut}`);
+            if (!response.ok) {
+                throw new Error('Failed to check availability');
+            }
+            const bookedDates = await response.json();
+            
+            const isAvailable = !bookedDates[tentId] || bookedDates[tentId].length === 0;
+            
+            return {
+                isAvailable,
+                tentId,
+                checkIn,
+                checkOut,
+                conflictingBookings: bookedDates[tentId] || [],
+                message: isAvailable ? 
+                    'Tent is available for selected dates' : 
+                    'Tent is not available for selected dates'
+            };
+        } catch (error) {
+            console.error('Error checking availability details:', error);
+            return {
+                isAvailable: false,
+                tentId,
+                checkIn,
+                checkOut,
+                conflictingBookings: [],
+                message: 'Error checking availability',
+                error: error.message
+            };
+        }
+    }
+
     // Get available tents for given dates
     async getAvailableTents(checkIn, checkOut) {
         console.log('getAvailableTents called with:', { checkIn, checkOut });
