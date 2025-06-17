@@ -624,10 +624,6 @@ class BookingForm {
         document.getElementById('booking-checkout').textContent = new Date(booking.checkOut).toLocaleDateString('en-IN');
         
         document.getElementById('booking-success-modal').classList.remove('hidden');
-
-        // Dispatch event to notify that booking is completed
-        const event = new CustomEvent('bookingCompleted', { detail: booking });
-        document.dispatchEvent(event);
     }
 
     resetForm() {
