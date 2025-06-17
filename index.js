@@ -187,6 +187,66 @@
             if (tentType && window.bookingSystem) {
               const totalPrice = window.bookingSystem.calculatePrice(tentType, checkInDate, checkOutDate);
               document.getElementById("total-price").textContent = `₹${totalPrice}`;
+              
+              // Check availability for the selected tent and dates
+              checkTentAvailability(tentType, checkInDate, checkOutDate);
+            }
+          }
+        }
+
+        // New function to check tent availability for specific dates
+        async function checkTentAvailability(tentId, checkIn, checkOut) {
+          if (!window.bookingSystem) {
+            console.log('Booking system not initialized yet');
+            return;
+          }
+
+          try {
+            console.log('Checking availability for tent:', tentId, 'dates:', checkIn, 'to', checkOut);
+            
+            // Show loading state
+            const tentSelect = document.getElementById("tent-type");
+            const availabilityStatus = document.getElementById("availability-status");
+            
+            // Create availability status element if it doesn't exist
+            if (!availabilityStatus) {
+              const statusDiv = document.createElement('div');
+              statusDiv.id = 'availability-status';
+              statusDiv.className = 'mt-2 text-sm';
+              tentSelect.parentNode.appendChild(statusDiv);
+            }
+            
+            const statusElement = document.getElementById("availability-status");
+            statusElement.innerHTML = '<div class="flex items-center text-blue-600"><i class="ri-loader-4-line animate-spin mr-2"></i>Checking availability...</div>';
+            
+            // Check availability using the booking system API
+            const isAvailable = await window.bookingSystem.isAvailable(tentId, checkIn, checkOut);
+            
+            if (isAvailable) {
+              statusElement.innerHTML = '<div class="flex items-center text-green-600"><i class="ri-check-line mr-2"></i>Available for selected dates</div>';
+              
+              // Enable the proceed button
+              const proceedButton = document.querySelector('#booking-form button[type="submit"]');
+              if (proceedButton) {
+                proceedButton.disabled = false;
+                proceedButton.className = 'w-full bg-primary hover:bg-blue-600 text-white py-3 rounded-button whitespace-nowrap transition-colors';
+              }
+            } else {
+              statusElement.innerHTML = '<div class="flex items-center text-red-600"><i class="ri-close-line mr-2"></i>Not available for selected dates</div>';
+              
+              // Disable the proceed button
+              const proceedButton = document.querySelector('#booking-form button[type="submit"]');
+              if (proceedButton) {
+                proceedButton.disabled = true;
+                proceedButton.className = 'w-full bg-gray-300 cursor-not-allowed text-gray-500 py-3 rounded-button whitespace-nowrap';
+              }
+            }
+            
+          } catch (error) {
+            console.error('Error checking tent availability:', error);
+            const statusElement = document.getElementById("availability-status");
+            if (statusElement) {
+              statusElement.innerHTML = '<div class="flex items-center text-red-600"><i class="ri-error-warning-line mr-2"></i>Error checking availability</div>';
             }
           }
         }
@@ -327,6 +387,12 @@
         // Tent type change event
         document.getElementById("tent-type").addEventListener("change", function () {
           updateTotalPrice();
+          
+          // Check availability when tent is selected
+          const tentType = this.value;
+          if (tentType && checkInDate && checkOutDate) {
+            checkTentAvailability(tentType, checkInDate, checkOutDate);
+          }
         });
 
         // Guest counter buttons
@@ -347,6 +413,30 @@
               guestsInput.value = parseInt(guestsInput.value) + 1;
             }
           });
+
+        // Add event listeners for date inputs to check availability
+        document.addEventListener('DOMContentLoaded', function() {
+          const checkInInput = document.getElementById('check-in-date');
+          const checkOutInput = document.getElementById('check-out-date');
+          
+          if (checkInInput) {
+            checkInInput.addEventListener('change', function() {
+              const tentType = document.getElementById("tent-type").value;
+              if (tentType && checkInDate && checkOutDate) {
+                checkTentAvailability(tentType, checkInDate, checkOutDate);
+              }
+            });
+          }
+          
+          if (checkOutInput) {
+            checkOutInput.addEventListener('change', function() {
+              const tentType = document.getElementById("tent-type").value;
+              if (tentType && checkInDate && checkOutDate) {
+                checkTentAvailability(tentType, checkInDate, checkOutDate);
+              }
+            });
+          }
+        });
 
         // Booking form submission - redirect to enhanced booking
         document
@@ -428,9 +518,12 @@
         });
 
         // View tent details buttons
-        document.querySelectorAll('.view-tent-details').forEach(button => {
-          button.addEventListener('click', function() {
-            const tentName = this.getAttribute('data-tent');
+        const viewDetailsButtons = document.querySelectorAll(
+          ".view-tent-details",
+        );
+        viewDetailsButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const tentName = this.dataset.tent;
             openTentDetailsModal(tentName);
           });
         });
@@ -487,6 +580,29 @@
               "Wi-Fi access",
               "Daily housekeeping",
               "Reading lamps",
+              "Plush bathrobes and slippers",
+            ],
+          },
+          "Triveni Tent 3": {
+            name: "Triveni Tent 3",
+            description:
+              "Triveni Tent 3 offers a premium glamping experience with a king-sized bed and a private balcony that provides stunning lake views. This spacious tent features elegant furnishings and modern amenities, perfect for those seeking luxury in nature.",
+            price: 159,
+            capacity: 3,
+            size: "425 sq ft",
+            bedType: "King",
+            image:
+              "https://readdy.ai/api/search-image?query=Luxury%20safari%20tent%20interior%20with%20king-sized%20bed%2C%20elegant%20furnishings%2C%20warm%20lighting%2C%20wooden%20floors%2C%20rustic%20luxury%20decor%2C%20private%20balcony%20with%20lake%20view%2C%20perfect%20for%20glamping%20experience&width=800&height=500&seq=tent3int&orientation=landscape",
+            amenities: [
+              "Private balcony with lake views",
+              "En-suite bathroom with shower",
+              "Organic toiletries",
+              "Air conditioning and heating",
+              "Mini refrigerator",
+              "Coffee and tea station",
+              "Wi-Fi access",
+              "Daily housekeeping",
+              "Telescope for stargazing",
               "Plush bathrobes and slippers",
             ],
           },
@@ -763,7 +879,7 @@
 
         // Add event listeners to "View Details" buttons
         const viewDetailsButtons = document.querySelectorAll(
-          ".view-tent-details:not([disabled])",
+          ".view-tent-details",
         );
         viewDetailsButtons.forEach((button) => {
           button.addEventListener("click", function () {

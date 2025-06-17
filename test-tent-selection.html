@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tent Selection Test - Baromas Resort</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: "#3b82f6", secondary: "#10b981" },
+                    borderRadius: { button: "8px" },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8">Tent Selection Test</h1>
+        
+        <!-- Test Instructions -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+            <h2 class="text-lg font-semibold text-blue-800 mb-2">Test Instructions:</h2>
+            <ul class="text-blue-700 space-y-1">
+                <li>• Available tents are shown in <span class="bg-green-100 text-green-800 px-1 rounded">green</span></li>
+                <li>• Selected tent will be highlighted in <span class="bg-blue-100 text-blue-800 px-1 rounded">blue</span></li>
+                <li>• Unavailable tents are shown in <span class="bg-red-100 text-red-800 px-1 rounded">red</span></li>
+                <li>• Click on available tents to test selection</li>
+            </ul>
+        </div>
+
+        <!-- Date Selection -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Select Dates</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Check-in Date</label>
+                    <input type="date" id="test-checkin" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Check-out Date</label>
+                    <input type="date" id="test-checkout" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+            </div>
+            <button id="load-tents" class="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-button transition-colors">
+                <i class="ri-refresh-line mr-2"></i>Load Tents
+            </button>
+        </div>
+
+        <!-- Tent Display -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Available Tents</h2>
+            <div id="tent-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Tents will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Selection Status -->
+        <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+            <h2 class="text-xl font-semibold mb-4">Selection Status</h2>
+            <div id="selection-status" class="text-gray-600">
+                No tent selected. Click on an available tent to select it.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class TentSelectionTester {
+            constructor() {
+                this.selectedTentId = null;
+                this.init();
+            }
+
+            init() {
+                this.setDefaultDates();
+                this.setupEventListeners();
+                this.loadSampleTents();
+            }
+
+            setDefaultDates() {
+                const today = new Date();
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const dayAfter = new Date(today);
+                dayAfter.setDate(today.getDate() + 2);
+
+                document.getElementById('test-checkin').value = tomorrow.toISOString().split('T')[0];
+                document.getElementById('test-checkout').value = dayAfter.toISOString().split('T')[0];
+            }
+
+            setupEventListeners() {
+                document.getElementById('load-tents').addEventListener('click', () => {
+                    this.loadSampleTents();
+                });
+            }
+
+            loadSampleTents() {
+                const container = document.getElementById('tent-container');
+                
+                // Sample tent data
+                const tents = [
+                    { id: 'triveni-1', name: 'Triveni Tent 1', price: 149, available: true },
+                    { id: 'triveni-2', name: 'Triveni Tent 2', price: 139, available: true },
+                    { id: 'triveni-3', name: 'Triveni Tent 3', price: 159, available: false },
+                    { id: 'panchvati-1', name: 'Panchvati Tent 1', price: 179, available: true },
+                    { id: 'panchvati-2', name: 'Panchvati Tent 2', price: 169, available: false },
+                    { id: 'panchvati-3', name: 'Panchvati Tent 3', price: 199, available: true }
+                ];
+
+                container.innerHTML = tents.map(tent => {
+                    if (tent.available) {
+                        return `
+                            <div class="border border-green-200 bg-green-50 rounded-lg p-4 cursor-pointer hover:border-green-400 transition-colors tent-option" data-tent-id="${tent.id}">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h4 class="font-semibold">${tent.name}</h4>
+                                        <p class="text-sm text-gray-600">Max 2 guests</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg font-bold text-primary">₹${tent.price}</div>
+                                        <div class="text-sm text-gray-600">per night</div>
+                                    </div>
+                                </div>
+                                <div class="mt-2 flex items-center text-green-600 text-sm">
+                                    <i class="ri-check-line mr-1"></i>Available for selected dates
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="border border-red-200 bg-red-50 rounded-lg p-4 cursor-not-allowed tent-option-unavailable" data-tent-id="${tent.id}">
+                                <div class="flex justify-between items-center opacity-60">
+                                    <div>
+                                        <h4 class="font-semibold">${tent.name}</h4>
+                                        <p class="text-sm text-gray-600">Max 2 guests</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg font-bold text-gray-400">₹${tent.price}</div>
+                                        <div class="text-sm text-gray-500">per night</div>
+                                    </div>
+                                </div>
+                                <div class="mt-2 flex items-center text-red-600 text-sm">
+                                    <i class="ri-close-line mr-1"></i>Not available for selected dates
+                                </div>
+                            </div>
+                        `;
+                    }
+                }).join('');
+
+                // Add click listeners to available tents
+                container.querySelectorAll('.tent-option').forEach(option => {
+                    option.addEventListener('click', () => this.selectTent(option));
+                });
+            }
+
+            selectTent(selectedOption) {
+                // Remove previous selection from all tent options
+                document.querySelectorAll('.tent-option').forEach(option => {
+                    // Remove blue selection styling
+                    option.classList.remove('border-primary', 'bg-blue-50');
+                    
+                    // Restore green styling for available tents
+                    if (option.classList.contains('border-green-200') && option.classList.contains('bg-green-50')) {
+                        option.classList.remove('border-green-400');
+                        option.classList.add('border-green-200');
+                    }
+                });
+
+                // Add selection styling to clicked option
+                selectedOption.classList.add('border-primary', 'bg-blue-50');
+                
+                // Store the tent ID
+                this.selectedTentId = selectedOption.dataset.tentId;
+                
+                // Update selection status
+                this.updateSelectionStatus();
+                
+                console.log('Tent selected:', this.selectedTentId);
+            }
+
+            updateSelectionStatus() {
+                const statusDiv = document.getElementById('selection-status');
+                if (this.selectedTentId) {
+                    statusDiv.innerHTML = `
+                        <div class="flex items-center text-green-600">
+                            <i class="ri-check-line mr-2"></i>
+                            <span class="font-medium">Selected: ${this.selectedTentId}</span>
+                        </div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="text-gray-600">
+                            No tent selected. Click on an available tent to select it.
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Initialize the tester when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            window.tentSelectionTester = new TentSelectionTester();
+        });
+    </script>
+</body>
+</html> 

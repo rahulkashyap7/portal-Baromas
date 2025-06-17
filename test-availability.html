@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Availability System Test - Baromas Resort</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: "#3b82f6", secondary: "#10b981" },
+                    borderRadius: { button: "8px" },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8">Availability System Test</h1>
+        
+        <!-- Test Controls -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Test Controls</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Check-in Date</label>
+                    <input type="date" id="test-checkin" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Check-out Date</label>
+                    <input type="date" id="test-checkout" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tent</label>
+                    <select id="test-tent" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">Select a tent</option>
+                        <option value="triveni-1">Triveni Tent 1</option>
+                        <option value="triveni-2">Triveni Tent 2</option>
+                        <option value="triveni-3">Triveni Tent 3</option>
+                        <option value="panchvati-1">Panchvati Tent 1</option>
+                        <option value="panchvati-2">Panchvati Tent 2</option>
+                        <option value="panchvati-3">Panchvati Tent 3</option>
+                        <option value="panchvati-4">Panchvati Tent 4</option>
+                        <option value="panchvati-5">Panchvati Tent 5</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex gap-4">
+                <button id="check-availability" class="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-button transition-colors">
+                    <i class="ri-search-line mr-2"></i>Check Availability
+                </button>
+                <button id="check-all-tents" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-button transition-colors">
+                    <i class="ri-list-check mr-2"></i>Check All Tents
+                </button>
+                <button id="run-demo" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-button transition-colors">
+                    <i class="ri-play-circle-line mr-2"></i>Run Demo
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Display -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Results</h2>
+            <div id="results" class="space-y-4">
+                <p class="text-gray-500">Select dates and tent, then click "Check Availability" to see results.</p>
+            </div>
+        </div>
+
+        <!-- API Status -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">API Status</h2>
+            <div id="api-status" class="space-y-2">
+                <div class="flex items-center">
+                    <div class="w-3 h-3 bg-gray-300 rounded-full mr-2"></div>
+                    <span>Checking API status...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tent Availability Grid -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Tent Availability Grid</h2>
+            <div id="tent-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Tent cards will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="booking-system-api.js"></script>
+    <script src="availability-demo.js"></script>
+    <script>
+        class AvailabilityTester {
+            constructor() {
+                this.apiBase = 'http://localhost:3000/api';
+                this.init();
+            }
+
+            async init() {
+                this.setupEventListeners();
+                await this.checkAPIStatus();
+                this.populateTentGrid();
+                this.setDefaultDates();
+            }
+
+            setupEventListeners() {
+                document.getElementById('check-availability').addEventListener('click', () => {
+                    this.checkSpecificAvailability();
+                });
+
+                document.getElementById('check-all-tents').addEventListener('click', () => {
+                    this.checkAllTentsAvailability();
+                });
+
+                document.getElementById('run-demo').addEventListener('click', () => {
+                    this.runDemo();
+                });
+
+                // Auto-check when dates change
+                document.getElementById('test-checkin').addEventListener('change', () => {
+                    this.autoCheckAvailability();
+                });
+
+                document.getElementById('test-checkout').addEventListener('change', () => {
+                    this.autoCheckAvailability();
+                });
+
+                document.getElementById('test-tent').addEventListener('change', () => {
+                    this.autoCheckAvailability();
+                });
+            }
+
+            setDefaultDates() {
+                const today = new Date();
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const dayAfter = new Date(today);
+                dayAfter.setDate(today.getDate() + 2);
+
+                document.getElementById('test-checkin').value = tomorrow.toISOString().split('T')[0];
+                document.getElementById('test-checkout').value = dayAfter.toISOString().split('T')[0];
+            }
+
+            async checkAPIStatus() {
+                const statusDiv = document.getElementById('api-status');
+                
+                try {
+                    const response = await fetch(`${this.apiBase}/tents`);
+                    if (response.ok) {
+                        statusDiv.innerHTML = `
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                <span class="text-green-600">API is running and accessible</span>
+                            </div>
+                        `;
+                    } else {
+                        throw new Error('API not responding');
+                    }
+                } catch (error) {
+                    statusDiv.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                            <span class="text-red-600">API is not accessible: ${error.message}</span>
+                        </div>
+                    `;
+                }
+            }
+
+            async checkSpecificAvailability() {
+                const checkIn = document.getElementById('test-checkin').value;
+                const checkOut = document.getElementById('test-checkout').value;
+                const tentId = document.getElementById('test-tent').value;
+
+                if (!checkIn || !checkOut || !tentId) {
+                    this.showResult('Please select all fields (check-in, check-out, and tent).', 'warning');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${this.apiBase}/availability?check_in=${checkIn}&check_out=${checkOut}`);
+                    const bookedDates = await response.json();
+                    
+                    const isAvailable = !bookedDates[tentId] || bookedDates[tentId].length === 0;
+                    const conflictingBookings = bookedDates[tentId] || [];
+
+                    let resultHTML = `
+                        <div class="border rounded-lg p-4 ${isAvailable ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}">
+                            <div class="flex items-center mb-2">
+                                <i class="ri-${isAvailable ? 'check' : 'close'}-line text-${isAvailable ? 'green' : 'red'}-600 mr-2"></i>
+                                <span class="font-semibold text-${isAvailable ? 'green' : 'red'}-800">
+                                    ${tentId} is ${isAvailable ? 'Available' : 'Not Available'}
+                                </span>
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                <div>Check-in: ${checkIn}</div>
+                                <div>Check-out: ${checkOut}</div>
+                            </div>
+                    `;
+
+                    if (!isAvailable && conflictingBookings.length > 0) {
+                        resultHTML += `
+                            <div class="mt-2">
+                                <div class="text-sm font-medium text-red-800">Conflicting Bookings:</div>
+                                ${conflictingBookings.map(booking => `
+                                    <div class="text-sm text-red-600 ml-2">
+                                        • ${booking.check_in} to ${booking.check_out}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+
+                    resultHTML += '</div>';
+                    this.showResult(resultHTML, isAvailable ? 'success' : 'error');
+
+                } catch (error) {
+                    this.showResult(`Error checking availability: ${error.message}`, 'error');
+                }
+            }
+
+            async checkAllTentsAvailability() {
+                const checkIn = document.getElementById('test-checkin').value;
+                const checkOut = document.getElementById('test-checkout').value;
+
+                if (!checkIn || !checkOut) {
+                    this.showResult('Please select check-in and check-out dates.', 'warning');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${this.apiBase}/availability?check_in=${checkIn}&check_out=${checkOut}`);
+                    const bookedDates = await response.json();
+
+                    const tentsResponse = await fetch(`${this.apiBase}/tents`);
+                    const tents = await tentsResponse.json();
+
+                    let resultHTML = `
+                        <div class="border rounded-lg p-4 border-blue-200 bg-blue-50">
+                            <div class="font-semibold text-blue-800 mb-2">Availability for ${checkIn} to ${checkOut}:</div>
+                    `;
+
+                    const availableTents = [];
+                    const unavailableTents = [];
+
+                    tents.forEach(tent => {
+                        const isBooked = bookedDates[tent.id] && bookedDates[tent.id].length > 0;
+                        if (isBooked) {
+                            unavailableTents.push(tent);
+                        } else {
+                            availableTents.push(tent);
+                        }
+                    });
+
+                    resultHTML += `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <div class="font-medium text-green-800 mb-2">Available Tents (${availableTents.length}):</div>
+                                ${availableTents.map(tent => `
+                                    <div class="text-sm text-green-600 ml-2">• ${tent.name} - ₹${tent.price}/night</div>
+                                `).join('')}
+                            </div>
+                            <div>
+                                <div class="font-medium text-red-800 mb-2">Unavailable Tents (${unavailableTents.length}):</div>
+                                ${unavailableTents.map(tent => `
+                                    <div class="text-sm text-red-600 ml-2">• ${tent.name}</div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+
+                    resultHTML += '</div>';
+                    this.showResult(resultHTML, 'info');
+
+                } catch (error) {
+                    this.showResult(`Error checking all tents: ${error.message}`, 'error');
+                }
+            }
+
+            async runDemo() {
+                const demo = new AvailabilityDemo();
+                await demo.runAllDemos();
+                this.showResult('Demo completed! Check the browser console for detailed results.', 'success');
+            }
+
+            async autoCheckAvailability() {
+                const checkIn = document.getElementById('test-checkin').value;
+                const checkOut = document.getElementById('test-checkout').value;
+                const tentId = document.getElementById('test-tent').value;
+
+                if (checkIn && checkOut && tentId) {
+                    // Auto-check after a short delay
+                    setTimeout(() => {
+                        this.checkSpecificAvailability();
+                    }, 500);
+                }
+            }
+
+            populateTentGrid() {
+                const tentGrid = document.getElementById('tent-grid');
+                const tents = [
+                    { id: 'triveni-1', name: 'Triveni Tent 1', price: 149 },
+                    { id: 'triveni-2', name: 'Triveni Tent 2', price: 139 },
+                    { id: 'triveni-3', name: 'Triveni Tent 3', price: 159 },
+                    { id: 'panchvati-1', name: 'Panchvati Tent 1', price: 179 },
+                    { id: 'panchvati-2', name: 'Panchvati Tent 2', price: 169 },
+                    { id: 'panchvati-3', name: 'Panchvati Tent 3', price: 199 },
+                    { id: 'panchvati-4', name: 'Panchvati Tent 4', price: 159 },
+                    { id: 'panchvati-5', name: 'Panchvati Tent 5', price: 189 }
+                ];
+
+                tentGrid.innerHTML = tents.map(tent => `
+                    <div class="border rounded-lg p-4 tent-card" data-tent-id="${tent.id}">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-semibold">${tent.name}</h3>
+                            <span class="text-sm text-gray-500">₹${tent.price}</span>
+                        </div>
+                        <div class="text-sm text-gray-600 mb-2">Select dates to check availability</div>
+                        <div class="status-indicator">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                Unknown
+                            </span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            showResult(content, type = 'info') {
+                const resultsDiv = document.getElementById('results');
+                const timestamp = new Date().toLocaleTimeString();
+                
+                const typeClasses = {
+                    success: 'border-green-200 bg-green-50',
+                    error: 'border-red-200 bg-red-50',
+                    warning: 'border-yellow-200 bg-yellow-50',
+                    info: 'border-blue-200 bg-blue-50'
+                };
+
+                const resultHTML = `
+                    <div class="border rounded-lg p-4 ${typeClasses[type]}">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="font-medium">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+                            <div class="text-xs text-gray-500">${timestamp}</div>
+                        </div>
+                        <div>${content}</div>
+                    </div>
+                `;
+
+                resultsDiv.innerHTML = resultHTML + resultsDiv.innerHTML;
+            }
+        }
+
+        // Initialize the tester when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            window.availabilityTester = new AvailabilityTester();
+        });
+    </script>
+</body>
+</html> 

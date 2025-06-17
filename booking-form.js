@@ -348,6 +348,9 @@ class BookingForm {
                             <div class="text-sm text-gray-600">per night</div>
                         </div>
                     </div>
+                    <div class="mt-2 text-xs text-gray-500">
+                        <i class="ri-information-line mr-1"></i>Select dates to check availability
+                    </div>
                 </div>
             `).join('');
             
@@ -376,10 +379,10 @@ class BookingForm {
                 return;
             }
 
-            // Display available tents
+            // Display available tents with availability status
             console.log('Displaying available tents:', availableTents);
             container.innerHTML = Object.entries(availableTents).map(([tentId, tent]) => `
-                <div class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary transition-colors tent-option" data-tent-id="${tentId}">
+                <div class="border border-green-200 bg-green-50 rounded-lg p-4 cursor-pointer hover:border-green-400 transition-colors tent-option" data-tent-id="${tentId}">
                     <div class="flex justify-between items-center">
                         <div>
                             <h4 class="font-semibold">${tent.name}</h4>
@@ -390,10 +393,39 @@ class BookingForm {
                             <div class="text-sm text-gray-600">per night</div>
                         </div>
                     </div>
+                    <div class="mt-2 flex items-center text-green-600 text-sm">
+                        <i class="ri-check-line mr-1"></i>Available for selected dates
+                    </div>
                 </div>
             `).join('');
 
-            // Add click listeners to tent options
+            // Also show unavailable tents with different styling
+            const allTents = window.bookingSystem.tents;
+            const unavailableTents = Object.entries(allTents).filter(([tentId, tent]) => !availableTents[tentId]);
+            
+            if (unavailableTents.length > 0) {
+                const unavailableHTML = unavailableTents.map(([tentId, tent]) => `
+                    <div class="border border-red-200 bg-red-50 rounded-lg p-4 cursor-not-allowed tent-option-unavailable" data-tent-id="${tentId}">
+                        <div class="flex justify-between items-center opacity-60">
+                            <div>
+                                <h4 class="font-semibold">${tent.name}</h4>
+                                <p class="text-sm text-gray-600">Max ${tent.maxGuests} guests</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-gray-400">₹${tent.price}</div>
+                                <div class="text-sm text-gray-500">per night</div>
+                            </div>
+                        </div>
+                        <div class="mt-2 flex items-center text-red-600 text-sm">
+                            <i class="ri-close-line mr-1"></i>Not available for selected dates
+                        </div>
+                    </div>
+                `).join('');
+                
+                container.innerHTML += '<div class="mt-4"><h5 class="text-sm font-medium text-gray-700 mb-2">Unavailable Tents:</h5>' + unavailableHTML + '</div>';
+            }
+
+            // Add click listeners to tent options (only for available tents)
             container.querySelectorAll('.tent-option').forEach(option => {
                 option.addEventListener('click', () => this.selectTent(option));
             });
@@ -405,6 +437,14 @@ class BookingForm {
                 this.updatePricing();
             }
             
+            // If there was a previously selected tent that's still available, restore its selection
+            if (this.bookingData.tentId && availableTents[this.bookingData.tentId]) {
+                const selectedOption = container.querySelector(`[data-tent-id="${this.bookingData.tentId}"]`);
+                if (selectedOption) {
+                    this.selectTent(selectedOption);
+                }
+            }
+            
             this.validateStep1();
         } catch (error) {
             console.error('Error updating available tents:', error);
@@ -414,17 +454,29 @@ class BookingForm {
     }
 
     selectTent(selectedOption) {
-        // Remove previous selection
+        // Remove previous selection from all tent options
         document.querySelectorAll('.tent-option').forEach(option => {
+            // Remove blue selection styling
             option.classList.remove('border-primary', 'bg-blue-50');
+            
+            // Restore green styling for available tents
+            if (option.classList.contains('border-green-200') && option.classList.contains('bg-green-50')) {
+                option.classList.remove('border-green-400');
+                option.classList.add('border-green-200');
+            }
         });
 
-        // Add selection to clicked option
+        // Add selection styling to clicked option
         selectedOption.classList.add('border-primary', 'bg-blue-50');
         
+        // Store the tent ID
         this.bookingData.tentId = selectedOption.dataset.tentId;
+        
+        // Update pricing and validation
         this.updatePricing();
         this.validateStep1();
+        
+        console.log('Tent selected:', this.bookingData.tentId);
     }
 
     updatePricing() {
@@ -640,9 +692,16 @@ class BookingForm {
         document.getElementById('customer-address').value = '';
         document.getElementById('special-requests').value = '';
         
-        // Reset tent selection
+        // Reset tent selection styling
         document.querySelectorAll('.tent-option').forEach(option => {
+            // Remove blue selection styling
             option.classList.remove('border-primary', 'bg-blue-50');
+            
+            // Restore green styling for available tents
+            if (option.classList.contains('border-green-200') && option.classList.contains('bg-green-50')) {
+                option.classList.remove('border-green-400');
+                option.classList.add('border-green-200');
+            }
         });
         
         // Reset pricing
