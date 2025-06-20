@@ -295,25 +295,24 @@
               const tentId = tentIdMap[tentName];
               if (tentId && statusSpan) {
                 console.log(`Checking tent ${tentName} (${tentId}):`, availableTents[tentId] ? 'Available' : 'Booked');
+                // const bookButton = card.querySelector('.book-tent');
                 if (availableTents[tentId]) {
                   statusSpan.className = 'bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full';
                   statusSpan.textContent = 'Available';
                   
-                  // Enable view details button
-                  const button = card.querySelector('button');
-                  if (button) {
-                    button.disabled = false;
-                    button.className = 'view-tent-details bg-primary hover:bg-blue-600 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors';
+                  // Enable Book Now button
+                  if (bookButton) {
+                    bookButton.disabled = false;
+                    bookButton.className = 'book-tent bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors';
                   }
                 } else {
                   statusSpan.className = 'bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full';
                   statusSpan.textContent = 'Booked';
                   
-                  // Disable view details button
-                  const button = card.querySelector('button');
-                  if (button) {
-                    button.disabled = true;
-                    button.className = 'view-tent-details bg-gray-300 cursor-not-allowed text-gray-600 px-3 py-1.5 rounded-button whitespace-nowrap text-sm';
+                  // Disable Book Now button
+                  if (bookButton) {
+                    bookButton.disabled = true;
+                    bookButton.className = 'book-tent bg-gray-300 cursor-not-allowed text-gray-600 px-3 py-1.5 rounded-button whitespace-nowrap text-sm';
                   }
                 }
               }
