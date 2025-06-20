@@ -15,12 +15,17 @@
         });
       });
 
+      // I want to show current date in the Availability Calendar
+
       document.addEventListener("DOMContentLoaded", function () {
-        // Calendar data
-        const today = new Date(2025, 5, 16); // June 16, 2025
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        console.log(today);
         let currentMonth = today.getMonth();
         let currentYear = today.getFullYear();
-
+        
         // Get booked dates from booking system
         function getBookedDates() {
           return window.bookingSystem ? window.bookingSystem.getBookedDates() : {};
