@@ -280,6 +280,18 @@ app.get('/api/bookings/export', (req, res) => {
     });
 });
 
+// Delete all bookings
+app.delete('/api/bookings', (req, res) => {
+    db.run('DELETE FROM bookings', function(err) {
+        if (err) {
+            console.error('Error deleting all bookings:', err);
+            res.status(500).json({ error: 'Failed to delete bookings' });
+        } else {
+            res.json({ message: 'All bookings deleted successfully' });
+        }
+    });
+});
+
 // Serve the main website
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));

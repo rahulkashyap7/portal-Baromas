@@ -71,6 +71,25 @@ class AdminPanelAPI {
         document.getElementById('modal-overlay').addEventListener('click', () => {
             this.closeModal();
         });
+
+        // Delete all bookings button
+        document.getElementById('delete-all-bookings').addEventListener('click', async () => {
+            if (confirm('Are you sure you want to delete ALL bookings? This action cannot be undone.')) {
+                try {
+                    const response = await fetch(`${this.apiBase}/bookings`, { method: 'DELETE' });
+                    if (response.ok) {
+                        alert('All bookings deleted successfully.');
+                        await this.loadStats();
+                        await this.loadBookings();
+                        this.updateUI();
+                    } else {
+                        alert('Failed to delete bookings.');
+                    }
+                } catch (error) {
+                    alert('Error deleting bookings.');
+                }
+            }
+        });
     }
 
     async applyFilters() {
