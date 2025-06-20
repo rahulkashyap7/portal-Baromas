@@ -51,68 +51,68 @@
           }
 
           // Add cells for each day of the month
-          for (let day = 1; day <= daysInMonth; day++) {
-            const dayCell = document.createElement("div");
-            dayCell.classList.add(
-              "calendar-day",
-              "flex",
-              "items-center",
-              "justify-center",
-              "cursor-pointer",
-              "rounded",
-            );
+          // for (let day = 1; day <= daysInMonth; day++) {
+          //   const dayCell = document.createElement("div");
+          //   dayCell.classList.add(
+          //     "calendar-day",
+          //     "flex",
+          //     "items-center",
+          //     "justify-center",
+          //     "cursor-pointer",
+          //     "rounded",
+          //   );
 
-            // Format date string for comparison
-            const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+          //   // Format date string for comparison
+          //   const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-            // Check if the date is booked
-            let isBooked = false;
-            const bookedDates = getBookedDates();
-            for (const tent in bookedDates) {
-              if (bookedDates[tent].includes(dateStr)) {
-                isBooked = true;
-                break;
-              }
-            }
+          //   // Check if the date is booked
+          //   let isBooked = false;
+          //   const bookedDates = getBookedDates();
+          //   for (const tent in bookedDates) {
+          //     if (bookedDates[tent].includes(dateStr)) {
+          //       isBooked = true;
+          //       break;
+          //     }
+          //   }
 
-            // Set appropriate class based on availability
-            if (isBooked) {
-              dayCell.classList.add("booked");
-            } else {
-              dayCell.classList.add("available");
-            }
+          //   // Set appropriate class based on availability
+          //   if (isBooked) {
+          //     dayCell.classList.add("booked");
+          //   } else {
+          //     dayCell.classList.add("available");
+          //   }
 
-            // Check if this is one of the selected dates
-            if (checkInDate && dateStr === checkInDate) {
-              dayCell.classList.remove("available");
-              dayCell.classList.add("bg-primary", "text-white");
-            }
+          //   // Check if this is one of the selected dates
+          //   if (checkInDate && dateStr === checkInDate) {
+          //     dayCell.classList.remove("available");
+          //     dayCell.classList.add("bg-primary", "text-white");
+          //   }
 
-            if (checkOutDate && dateStr === checkOutDate) {
-              dayCell.classList.remove("available");
-              dayCell.classList.add("bg-primary", "text-white");
-            }
+          //   if (checkOutDate && dateStr === checkOutDate) {
+          //     dayCell.classList.remove("available");
+          //     dayCell.classList.add("bg-primary", "text-white");
+          //   }
 
-            // Disable past dates
-            const cellDate = new Date(year, month, day);
-            if (cellDate < today) {
-              dayCell.classList.remove("available", "booked");
-              dayCell.classList.add("text-gray-300", "bg-gray-100", "disabled");
-              dayCell.style.cursor = "default";
-            }
+          //   // Disable past dates
+          //   const cellDate = new Date(year, month, day);
+          //   if (cellDate < today) {
+          //     dayCell.classList.remove("available", "booked");
+          //     dayCell.classList.add("text-gray-300", "bg-gray-100", "disabled");
+          //     dayCell.style.cursor = "default";
+          //   }
 
-            dayCell.textContent = day;
-            dayCell.dataset.date = dateStr;
+          //   dayCell.textContent = day;
+          //   dayCell.dataset.date = dateStr;
 
-            // Add click event for date selection
-            if (!dayCell.classList.contains("disabled")) {
-              dayCell.addEventListener("click", function () {
-                selectDate(dateStr);
-              });
-            }
+          //   // Add click event for date selection
+          //   if (!dayCell.classList.contains("disabled")) {
+          //     dayCell.addEventListener("click", function () {
+          //       selectDate(dateStr);
+          //     });
+          //   }
 
-            calendarDays.appendChild(dayCell);
-          }
+          //   calendarDays.appendChild(dayCell);
+          // }
         }
 
         // Select a date
@@ -176,13 +176,13 @@
           document.getElementById("total-price").textContent = "$0";
 
           // Reset calendar UI
-          const selectedCells = document.querySelectorAll(".calendar-day.bg-primary");
-          selectedCells.forEach((cell) => {
-            cell.classList.remove("bg-primary", "text-white");
-            if (!cell.classList.contains("booked")) {
-              cell.classList.add("available");
-            }
-          });
+          // const selectedCells = document.querySelectorAll(".calendar-day.bg-primary");
+          // selectedCells.forEach((cell) => {
+          //   cell.classList.remove("bg-primary", "text-white");
+          //   if (!cell.classList.contains("booked")) {
+          //     cell.classList.add("available");
+          //   }
+          // });
         }
 
         // Update total price based on selected dates and tent
@@ -294,27 +294,27 @@
               
               const tentId = tentIdMap[tentName];
               if (tentId && statusSpan) {
-                console.log(`Checking tent ${tentName} (${tentId}):`, availableTents[tentId] ? 'Available' : 'Booked');
+                // console.log(`Checking tent ${tentName} (${tentId}):`, availableTents[tentId] ? 'Available' : 'Booked');
                 // const bookButton = card.querySelector('.book-tent');
-                if (availableTents[tentId]) {
-                  statusSpan.className = 'bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full';
-                  statusSpan.textContent = 'Available';
+                // if (availableTents[tentId]) {
+                //   statusSpan.className = 'bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full';
+                //   statusSpan.textContent = 'Available';
                   
-                  // Enable Book Now button
-                  if (bookButton) {
-                    bookButton.disabled = false;
-                    bookButton.className = 'book-tent bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors';
-                  }
-                } else {
-                  statusSpan.className = 'bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full';
-                  statusSpan.textContent = 'Booked';
+                //   // Enable Book Now button
+                //   if (bookButton) {
+                //     bookButton.disabled = false;
+                //     bookButton.className = 'book-tent bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors';
+                //   }
+                // } else {
+                //   statusSpan.className = 'bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full';
+                //   statusSpan.textContent = 'Booked';
                   
-                  // Disable Book Now button
-                  if (bookButton) {
-                    bookButton.disabled = true;
-                    bookButton.className = 'book-tent bg-gray-300 cursor-not-allowed text-gray-600 px-3 py-1.5 rounded-button whitespace-nowrap text-sm';
-                  }
-                }
+                //   // Disable Book Now button
+                //   if (bookButton) {
+                //     bookButton.disabled = true;
+                //     bookButton.className = 'book-tent bg-gray-300 cursor-not-allowed text-gray-600 px-3 py-1.5 rounded-button whitespace-nowrap text-sm';
+                //   }
+                // }
               }
             });
           } catch (error) {
