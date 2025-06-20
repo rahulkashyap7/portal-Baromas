@@ -232,40 +232,34 @@ class BookingSystemAPI {
             special_requests: customerInfo.specialRequests || '',
             total_amount: totalAmount,
             advance_amount: advanceAmount,
-            payment_id: 'TEST_PAYMENT_' + bookingId
+            payment_id: 'BYPASS_PAYMENT_' + bookingId,
+            status: 'confirmed'  // Set status as confirmed since payment is bypassed
         };
 
-        console.log('Created booking payload:', bookingPayload);
-
         try {
-            // Send booking to API
+            console.log('Sending booking to API:', bookingPayload);
             const response = await fetch(`${this.apiBase}/bookings`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(bookingPayload)
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to create booking');
+                throw new Error('Failed to create booking');
             }
 
             const booking = await response.json();
             console.log('Booking created successfully:', booking);
-            
-            // Reload bookings to update local cache
-            await this.loadBookings();
-            
+
             // Send notifications
-            this.sendNotifications(booking);
-            console.log('Notifications sent');
-            
+            await this.sendNotifications(booking);
+
             return booking;
         } catch (error) {
             console.error('Error creating booking:', error);
-            throw error;
+            throw new Error('Failed to create booking: ' + error.message);
         }
     }
 
