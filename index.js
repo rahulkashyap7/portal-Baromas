@@ -46,6 +46,11 @@
           const firstDay = new Date(year, month, 1).getDay();
           const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+          // Get selected tent
+          const tentType = document.getElementById("tent-type").value;
+          const bookedDates = getBookedDates();
+          const tentBookedDates = tentType && bookedDates[tentType] ? bookedDates[tentType] : [];
+
           // Add empty cells for days before the first day of the month
           for (let i = 0; i < firstDay; i++) {
             const emptyDay = document.createElement("div");
@@ -65,10 +70,42 @@
             );
 
             const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+
+            // Check if the date is booked for the selected tent
+            let isBooked = false;
+            if (tentType && tentBookedDates.includes(dateStr)) {
+              isBooked = true;
+            }
+
+            // Set appropriate class based on availability
+            if (isBooked) {
+              dayCell.classList.add("bg-red-100", "text-red-800", "booked");
+              dayCell.style.cursor = "not-allowed";
+            } else {
+              dayCell.classList.add("available");
+            }
+
+            // Check if this is one of the selected dates
+            if (checkInDate && dateStr === checkInDate) {
+              dayCell.classList.remove("available", "bg-red-100", "text-red-800");
+              dayCell.classList.add("bg-primary", "text-white");
+            }
+
+            if (checkOutDate && dateStr === checkOutDate) {
+              dayCell.classList.remove("available", "bg-red-100", "text-red-800");
+              dayCell.classList.add("bg-primary", "text-white");
+            }
+
+            // Disable past dates
+
             const cellDate = new Date(year, month, day);
             let isBooked = bookedDatesForTent.includes(dateStr);
 
             if (cellDate < today) {
+
+              dayCell.classList.remove("available", "booked", "bg-primary", "text-white", "bg-red-100", "text-red-800");
+
               dayCell.classList.add("text-gray-300", "bg-gray-100", "disabled");
               dayCell.style.cursor = "default";
             } else if (isBooked) {
@@ -83,7 +120,11 @@
             dayCell.textContent = day;
             dayCell.dataset.date = dateStr;
 
+
+            // Add click event for date selection (only if not booked or disabled)
+
             // Add click event for date selection (only if not disabled or booked)
+
             if (!dayCell.classList.contains("disabled") && !isBooked) {
               dayCell.addEventListener("click", function () {
                 // If selecting check-in
@@ -129,6 +170,36 @@
           }
         }
 
+
+        // Select a date
+        function selectDate(dateStr) {
+          if (!checkInDate) {
+            // First click - set check-in date
+            checkInDate = dateStr;
+            document.getElementById("check-in-date").value =
+              formatDateForDisplay(dateStr);
+
+            // Update calendar UI
+            generateCalendar(currentMonth, currentYear);
+          } else if (!checkOutDate && dateStr > checkInDate) {
+            // Second click - set check-out date
+            checkOutDate = dateStr;
+            document.getElementById("check-out-date").value =
+              formatDateForDisplay(dateStr);
+
+            // Update calendar UI
+            generateCalendar(currentMonth, currentYear);
+
+            // Calculate and update total price
+            updateTotalPrice();
+          } else {
+            // Reset and start over
+            resetDateSelection();
+            selectDate(dateStr);
+          }
+        }
+
+
         // Format date for display
         function formatDateForDisplay(dateStr) {
           const date = new Date(dateStr);
@@ -150,13 +221,13 @@
           document.getElementById("total-price").textContent = "$0";
 
           // Reset calendar UI
-          const selectedCells = document.querySelectorAll(".calendar-day.bg-primary");
-          selectedCells.forEach((cell) => {
-            cell.classList.remove("bg-primary", "text-white");
-            if (!cell.classList.contains("booked")) {
-              cell.classList.add("available");
-            }
-          });
+          // const selectedCells = document.querySelectorAll(".calendar-day.bg-primary");
+          // selectedCells.forEach((cell) => {
+          //   cell.classList.remove("bg-primary", "text-white");
+          //   if (!cell.classList.contains("booked")) {
+          //     cell.classList.add("available");
+          //   }
+          // });
         }
 
         // Update total price based on selected dates and tent

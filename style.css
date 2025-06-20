@@ -10,9 +10,11 @@
           color: #10b981;
       }
 
-      .calendar-day.booked {
-          background-color: rgba(239, 68, 68, 0.1);
-          color: #ef4444;
+      .calendar-day.booked,
+      .calendar-day.bg-red-100 {
+          background-color: #fecaca !important; /* Tailwind's red-200 for more visibility */
+          color: #b91c1c !important; /* Tailwind's red-800 for strong text */
+          border: 2px solid #ef4444 !important; /* Tailwind's red-500 border */
       }
 
       .calendar-day:hover:not(.disabled) {
