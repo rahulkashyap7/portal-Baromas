@@ -15,12 +15,17 @@
         });
       });
 
+      // I want to show current date in the Availability Calendar
+
       document.addEventListener("DOMContentLoaded", function () {
-        // Calendar data
-        const today = new Date(2025, 5, 16); // June 16, 2025
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        console.log(today);
         let currentMonth = today.getMonth();
         let currentYear = today.getFullYear();
-
+        
         // Get booked dates from booking system
         function getBookedDates() {
           return window.bookingSystem ? window.bookingSystem.getBookedDates() : {};
@@ -71,17 +76,17 @@
             }
 
             // Set appropriate class based on availability
-            if (isBooked) {
-              dayCell.classList.add("booked");
-            } else {
-              dayCell.classList.add("available");
-            }
+            // if (isBooked) {
+            //   dayCell.classList.add("booked");
+            // } else {
+            //   dayCell.classList.add("available");
+            // }
 
             // Check if this is one of the selected dates
-            if (checkInDate && dateStr === checkInDate) {
-              dayCell.classList.remove("available");
-              dayCell.classList.add("bg-primary", "text-white");
-            }
+            // if (checkInDate && dateStr === checkInDate) {
+            //   dayCell.classList.remove("available");
+            //   dayCell.classList.add("bg-primary", "text-white");
+            // }
 
             if (checkOutDate && dateStr === checkOutDate) {
               dayCell.classList.remove("available");
@@ -253,69 +258,20 @@
 
         // Update tent availability status in the UI
         async function updateTentAvailabilityStatus() {
-          if (!window.bookingSystem) {
-            console.log('Booking system not initialized yet');
-            return;
-          }
-          
-          console.log('Updating tent availability status...');
-          const today = new Date().toISOString().split('T')[0];
-          const tomorrow = new Date();
-          tomorrow.setDate(tomorrow.getDate() + 1);
-          const tomorrowStr = tomorrow.toISOString().split('T')[0];
-          
-          try {
-            // Check availability for today and tomorrow as sample
-            console.log('Checking availability for dates:', { today, tomorrowStr });
-            const availableTents = await window.bookingSystem.getAvailableTents(today, tomorrowStr);
-            console.log('Available tents:', availableTents);
-            
-            // Update tent cards status
-            document.querySelectorAll('.tent-card').forEach(card => {
-              const tentName = card.querySelector('h4').textContent;
-              const statusSpan = card.querySelector('span[class*="bg-"]');
-              
-              // Map tent names to IDs
-              const tentIdMap = {
-                'Triveni Tent 1': 'triveni-1',
-                'Triveni Tent 2': 'triveni-2',
-                'Triveni Tent 3': 'triveni-3',
-                'Panchvati Tent 1': 'panchvati-1',
-                'Panchvati Tent 2': 'panchvati-2',
-                'Panchvati Tent 3': 'panchvati-3',
-                'Panchvati Tent 4': 'panchvati-4',
-                'Panchvati Tent 5': 'panchvati-5'
-              };
-              
-              const tentId = tentIdMap[tentName];
-              if (tentId && statusSpan) {
-                console.log(`Checking tent ${tentName} (${tentId}):`, availableTents[tentId] ? 'Available' : 'Booked');
-                if (availableTents[tentId]) {
-                  statusSpan.className = 'bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full';
-                  statusSpan.textContent = 'Available';
-                  
-                  // Enable view details button
-                  const button = card.querySelector('button');
-                  if (button) {
-                    button.disabled = false;
-                    button.className = 'view-tent-details bg-primary hover:bg-blue-600 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors';
-                  }
-                } else {
-                  statusSpan.className = 'bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full';
-                  statusSpan.textContent = 'Booked';
-                  
-                  // Disable view details button
-                  const button = card.querySelector('button');
-                  if (button) {
-                    button.disabled = true;
-                    button.className = 'view-tent-details bg-gray-300 cursor-not-allowed text-gray-600 px-3 py-1.5 rounded-button whitespace-nowrap text-sm';
-                  }
-                }
-              }
-            });
-          } catch (error) {
-            console.error('Error updating tent availability:', error);
-          }
+          // Always set all tent cards to Available
+          document.querySelectorAll('.tent-card').forEach(card => {
+            const statusSpan = card.querySelector('span[class*="bg-"]');
+            if (statusSpan) {
+              statusSpan.className = 'bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full';
+              statusSpan.textContent = 'Available';
+            }
+            // Optionally, always enable Book Now button
+            const bookButton = card.querySelector('.book-tent');
+            if (bookButton) {
+              bookButton.disabled = false;
+              bookButton.className = 'book-tent bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors';
+            }
+          });
         }
 
         // Initialize calendar
