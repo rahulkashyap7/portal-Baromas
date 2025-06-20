@@ -50,69 +50,68 @@
             calendarDays.appendChild(emptyDay);
           }
 
-          // Add cells for each day of the month
-          // for (let day = 1; day <= daysInMonth; day++) {
-          //   const dayCell = document.createElement("div");
-          //   dayCell.classList.add(
-          //     "calendar-day",
-          //     "flex",
-          //     "items-center",
-          //     "justify-center",
-          //     "cursor-pointer",
-          //     "rounded",
-          //   );
+          for (let day = 1; day <= daysInMonth; day++) {
+            const dayCell = document.createElement("div");
+            dayCell.classList.add(
+              "calendar-day",
+              "flex",
+              "items-center",
+              "justify-center",
+              "cursor-pointer",
+              "rounded",
+            );
 
-          //   // Format date string for comparison
-          //   const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+            // Format date string for comparison
+            const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-          //   // Check if the date is booked
-          //   let isBooked = false;
-          //   const bookedDates = getBookedDates();
-          //   for (const tent in bookedDates) {
-          //     if (bookedDates[tent].includes(dateStr)) {
-          //       isBooked = true;
-          //       break;
-          //     }
-          //   }
+            // Check if the date is booked
+            let isBooked = false;
+            const bookedDates = getBookedDates();
+            for (const tent in bookedDates) {
+              if (bookedDates[tent].includes(dateStr)) {
+                isBooked = true;
+                break;
+              }
+            }
 
             // Set appropriate class based on availability
-            // if (isBooked) {
-            //   dayCell.classList.add("booked");
-            // } else {
-            //   dayCell.classList.add("available");
-            // }
+            if (isBooked) {
+              dayCell.classList.add("booked");
+            } else {
+              dayCell.classList.add("available");
+            }
 
             // Check if this is one of the selected dates
-            // if (checkInDate && dateStr === checkInDate) {
-            //   dayCell.classList.remove("available");
-            //   dayCell.classList.add("bg-primary", "text-white");
-            // }
+            if (checkInDate && dateStr === checkInDate) {
+              dayCell.classList.remove("available");
+              dayCell.classList.add("bg-primary", "text-white");
+            }
 
-          //   if (checkOutDate && dateStr === checkOutDate) {
-          //     dayCell.classList.remove("available");
-          //     dayCell.classList.add("bg-primary", "text-white");
-          //   }
+            if (checkOutDate && dateStr === checkOutDate) {
+              dayCell.classList.remove("available");
+              dayCell.classList.add("bg-primary", "text-white");
+            }
 
-          //   // Disable past dates
-          //   const cellDate = new Date(year, month, day);
-          //   if (cellDate < today) {
-          //     dayCell.classList.remove("available", "booked");
-          //     dayCell.classList.add("text-gray-300", "bg-gray-100", "disabled");
-          //     dayCell.style.cursor = "default";
-          //   }
+            // Disable past dates
+            const cellDate = new Date(year, month, day);
+            if (cellDate < today) {
+              dayCell.classList.remove("available", "booked");
+              dayCell.classList.add("text-gray-300", "bg-gray-100", "disabled");
+              dayCell.style.cursor = "default";
+            }
 
-          //   dayCell.textContent = day;
-          //   dayCell.dataset.date = dateStr;
+            dayCell.textContent = day;
+            dayCell.dataset.date = dateStr;
 
-          //   // Add click event for date selection
-          //   if (!dayCell.classList.contains("disabled")) {
-          //     dayCell.addEventListener("click", function () {
-          //       selectDate(dateStr);
-          //     });
-          //   }
+            // Add click event for date selection
+            if (!dayCell.classList.contains("disabled")) {
+              dayCell.addEventListener("click", function () {
+                selectDate(dateStr);
+              });
+            }
 
-          //   calendarDays.appendChild(dayCell);
-          // }
+            calendarDays.appendChild(dayCell);
+          }
         }
 
         // Select a date
