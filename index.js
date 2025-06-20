@@ -43,6 +43,11 @@
           const firstDay = new Date(year, month, 1).getDay();
           const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+          // Get selected tent
+          const tentType = document.getElementById("tent-type").value;
+          const bookedDates = getBookedDates();
+          const tentBookedDates = tentType && bookedDates[tentType] ? bookedDates[tentType] : [];
+
           // Add empty cells for days before the first day of the month
           for (let i = 0; i < firstDay; i++) {
             const emptyDay = document.createElement("div");
@@ -64,38 +69,35 @@
             // Format date string for comparison
             const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-            // Check if the date is booked
+            // Check if the date is booked for the selected tent
             let isBooked = false;
-            const bookedDates = getBookedDates();
-            for (const tent in bookedDates) {
-              if (bookedDates[tent].includes(dateStr)) {
-                isBooked = true;
-                break;
-              }
+            if (tentType && tentBookedDates.includes(dateStr)) {
+              isBooked = true;
             }
 
             // Set appropriate class based on availability
             if (isBooked) {
-              dayCell.classList.add("booked");
+              dayCell.classList.add("bg-red-100", "text-red-800", "booked");
+              dayCell.style.cursor = "not-allowed";
             } else {
               dayCell.classList.add("available");
             }
 
             // Check if this is one of the selected dates
             if (checkInDate && dateStr === checkInDate) {
-              dayCell.classList.remove("available");
+              dayCell.classList.remove("available", "bg-red-100", "text-red-800");
               dayCell.classList.add("bg-primary", "text-white");
             }
 
             if (checkOutDate && dateStr === checkOutDate) {
-              dayCell.classList.remove("available");
+              dayCell.classList.remove("available", "bg-red-100", "text-red-800");
               dayCell.classList.add("bg-primary", "text-white");
             }
 
             // Disable past dates
             const cellDate = new Date(year, month, day);
             if (cellDate < today) {
-              dayCell.classList.remove("available", "booked");
+              dayCell.classList.remove("available", "booked", "bg-primary", "text-white", "bg-red-100", "text-red-800");
               dayCell.classList.add("text-gray-300", "bg-gray-100", "disabled");
               dayCell.style.cursor = "default";
             }
@@ -103,8 +105,8 @@
             dayCell.textContent = day;
             dayCell.dataset.date = dateStr;
 
-            // Add click event for date selection
-            if (!dayCell.classList.contains("disabled")) {
+            // Add click event for date selection (only if not booked or disabled)
+            if (!dayCell.classList.contains("disabled") && !isBooked) {
               dayCell.addEventListener("click", function () {
                 selectDate(dateStr);
               });
@@ -123,13 +125,7 @@
               formatDateForDisplay(dateStr);
 
             // Update calendar UI
-            const selectedCell = document.querySelector(
-              `.calendar-day[data-date="${dateStr}"]`,
-            );
-            if (selectedCell) {
-              selectedCell.classList.remove("available");
-              selectedCell.classList.add("bg-primary", "text-white");
-            }
+            generateCalendar(currentMonth, currentYear);
           } else if (!checkOutDate && dateStr > checkInDate) {
             // Second click - set check-out date
             checkOutDate = dateStr;
@@ -137,13 +133,7 @@
               formatDateForDisplay(dateStr);
 
             // Update calendar UI
-            const selectedCell = document.querySelector(
-              `.calendar-day[data-date="${dateStr}"]`,
-            );
-            if (selectedCell) {
-              selectedCell.classList.remove("available");
-              selectedCell.classList.add("bg-primary", "text-white");
-            }
+            generateCalendar(currentMonth, currentYear);
 
             // Calculate and update total price
             updateTotalPrice();
