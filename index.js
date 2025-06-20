@@ -26,6 +26,9 @@
         let currentMonth = today.getMonth();
         let currentYear = today.getFullYear();
         
+        // Store booked dates for the selected tent
+        let selectedTentBookedDates = [];
+
         // Get booked dates from booking system
         function getBookedDates() {
           return window.bookingSystem ? window.bookingSystem.getBookedDates() : {};
@@ -36,7 +39,7 @@
         let checkOutDate = null;
 
         // Generate calendar
-        function generateCalendar(month, year) {
+        function generateCalendar(month, year, bookedDatesForTent = []) {
           const calendarDays = document.getElementById("calendar-days");
           calendarDays.innerHTML = "";
 
@@ -50,7 +53,6 @@
             calendarDays.appendChild(emptyDay);
           }
 
-          // Add cells for each day of the month
           for (let day = 1; day <= daysInMonth; day++) {
             const dayCell = document.createElement("div");
             dayCell.classList.add(
@@ -59,99 +61,71 @@
               "items-center",
               "justify-center",
               "cursor-pointer",
-              "rounded",
+              "rounded"
             );
 
-            // Format date string for comparison
             const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
-            // Check if the date is booked
-            let isBooked = false;
-            const bookedDates = getBookedDates();
-            for (const tent in bookedDates) {
-              if (bookedDates[tent].includes(dateStr)) {
-                isBooked = true;
-                break;
-              }
-            }
-
-            // Set appropriate class based on availability
-            // if (isBooked) {
-            //   dayCell.classList.add("booked");
-            // } else {
-            //   dayCell.classList.add("available");
-            // }
-
-            // Check if this is one of the selected dates
-            // if (checkInDate && dateStr === checkInDate) {
-            //   dayCell.classList.remove("available");
-            //   dayCell.classList.add("bg-primary", "text-white");
-            // }
-
-            if (checkOutDate && dateStr === checkOutDate) {
-              dayCell.classList.remove("available");
-              dayCell.classList.add("bg-primary", "text-white");
-            }
-
-            // Disable past dates
             const cellDate = new Date(year, month, day);
+            let isBooked = bookedDatesForTent.includes(dateStr);
+
             if (cellDate < today) {
-              dayCell.classList.remove("available", "booked");
               dayCell.classList.add("text-gray-300", "bg-gray-100", "disabled");
               dayCell.style.cursor = "default";
+            } else if (isBooked) {
+              dayCell.classList.add("bg-red-200", "text-red-700", "booked-date", "disabled");
+              dayCell.style.cursor = "not-allowed";
+            } else if (checkInDate === dateStr || checkOutDate === dateStr) {
+              dayCell.classList.add("bg-primary", "text-white");
+            } else {
+              dayCell.classList.add("bg-green-100", "text-green-800");
             }
 
             dayCell.textContent = day;
             dayCell.dataset.date = dateStr;
 
-            // Add click event for date selection
-            if (!dayCell.classList.contains("disabled")) {
+            // Add click event for date selection (only if not disabled or booked)
+            if (!dayCell.classList.contains("disabled") && !isBooked) {
               dayCell.addEventListener("click", function () {
-                selectDate(dateStr);
+                // If selecting check-in
+                if (!checkInDate) {
+                  checkInDate = dateStr;
+                  document.getElementById("check-in-date").value = formatDateForDisplay(dateStr);
+                  document.getElementById("check-out-date").value = "";
+                  checkOutDate = null;
+                } else if (!checkOutDate && dateStr > checkInDate) {
+                  // Check if any date in the range is booked
+                  let valid = true;
+                  let start = new Date(checkInDate);
+                  let end = new Date(dateStr);
+                  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                    const dStr = d.toISOString().split('T')[0];
+                    if (bookedDatesForTent.includes(dStr)) {
+                      valid = false;
+                      break;
+                    }
+                  }
+                  if (valid) {
+                    checkOutDate = dateStr;
+                    document.getElementById("check-out-date").value = formatDateForDisplay(dateStr);
+                  } else {
+                    // Highlight booked dates in red for the selected range
+                    generateCalendar(currentMonth, currentYear, bookedDatesForTent);
+                    // Optionally, show a message to the user
+                    return;
+                  }
+                } else {
+                  // Reset and start over
+                  checkInDate = dateStr;
+                  checkOutDate = null;
+                  document.getElementById("check-in-date").value = formatDateForDisplay(dateStr);
+                  document.getElementById("check-out-date").value = "";
+                }
+                generateCalendar(currentMonth, currentYear, bookedDatesForTent);
+                updateTotalPrice();
               });
             }
 
             calendarDays.appendChild(dayCell);
-          }
-        }
-
-        // Select a date
-        function selectDate(dateStr) {
-          if (!checkInDate) {
-            // First click - set check-in date
-            checkInDate = dateStr;
-            document.getElementById("check-in-date").value =
-              formatDateForDisplay(dateStr);
-
-            // Update calendar UI
-            const selectedCell = document.querySelector(
-              `.calendar-day[data-date="${dateStr}"]`,
-            );
-            if (selectedCell) {
-              selectedCell.classList.remove("available");
-              selectedCell.classList.add("bg-primary", "text-white");
-            }
-          } else if (!checkOutDate && dateStr > checkInDate) {
-            // Second click - set check-out date
-            checkOutDate = dateStr;
-            document.getElementById("check-out-date").value =
-              formatDateForDisplay(dateStr);
-
-            // Update calendar UI
-            const selectedCell = document.querySelector(
-              `.calendar-day[data-date="${dateStr}"]`,
-            );
-            if (selectedCell) {
-              selectedCell.classList.remove("available");
-              selectedCell.classList.add("bg-primary", "text-white");
-            }
-
-            // Calculate and update total price
-            updateTotalPrice();
-          } else {
-            // Reset and start over
-            resetDateSelection();
-            selectDate(dateStr);
           }
         }
 
@@ -272,6 +246,24 @@
               bookButton.className = 'book-tent bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-button whitespace-nowrap text-sm transition-colors';
             }
           });
+        }
+
+        // Fetch booked dates for the selected tent and regenerate calendar
+        async function updateCalendarForSelectedTent() {
+          const tentType = document.getElementById("tent-type").value;
+          if (!tentType || !window.bookingSystem) {
+            selectedTentBookedDates = [];
+            generateCalendar(currentMonth, currentYear, []);
+            return;
+          }
+          try {
+            const allBooked = await window.bookingSystem.getBookedDates();
+            selectedTentBookedDates = allBooked[tentType] || [];
+            generateCalendar(currentMonth, currentYear, selectedTentBookedDates);
+          } catch (e) {
+            selectedTentBookedDates = [];
+            generateCalendar(currentMonth, currentYear, []);
+          }
         }
 
         // Initialize calendar
